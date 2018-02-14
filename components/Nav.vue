@@ -5,7 +5,8 @@
           clipped
           v-model="drawer"
           :mini-variant="mini"
-          dark 
+          class="nav"
+          width="240"
           app>
       <v-list>
         <v-list-tile v-if="mini" @click="mini = !mini">
@@ -39,37 +40,45 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-        <v-toolbar color="primary" height="45px" app>
-            <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar color="primary" height="45px" fixed clipped-left app>
+            <v-toolbar-side-icon @click.stop="drawer = !drawer" class="icons"></v-toolbar-side-icon>
             <v-toolbar-title class="white--text">Ticketeando</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon class="white--text">
-                <v-badge color="accent">
+            <v-btn icon class="icons">
+                <v-badge color="accent" overlap>
                   <span slot="badge">6</span>
                       <v-icon>{{(hasNotification ? 'notifications_active':'notifications')}}</v-icon>
                 </v-badge>
             </v-btn>
-            <v-btn icon class="white--text">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
-             <v-avatar :tile=false size="40px"class="grey lighten-4">
-              <img src="/v.png" alt="username" title="username">
-            </v-avatar>
+            <UserMenu/>
         </v-toolbar>
     </nav>
 </template>
 <script>
+import UserMenu from '~/components/controls/UserMenu.vue';
+
     export default{
         data(){
             return {
                 hasNotification:false,
-                drawer: false,
+                drawer: true,
                 menuItems: [
-                  { title: 'Home', icon: 'dashboard' },
-                  { title: 'About', icon: 'question_answer' }
+                  { title: 'Inicio', icon: 'dashboard' },
+                  { title: 'Mis tickets', icon: 'bug_report' }
                 ],
-                mini: true,
+                mini: false,
             }
+        },
+        components:{
+          UserMenu
         }
     }
 </script>
+<style scoped>
+    .nav{
+      background-color:#f8f8f8;
+    }
+    .icons{
+      color:#BCAAA4;
+    }
+</style>
