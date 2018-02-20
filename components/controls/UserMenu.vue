@@ -35,7 +35,7 @@
             <v-list-tile-title>Documentación</v-list-tile-title>
           </v-list-tile>
           <v-divider></v-divider>
-          <v-list-tile @click="">
+          <v-list-tile @click="logout()">
             <v-list-tile-action>
               <v-icon>power_settings_new</v-icon>
             </v-list-tile-action>
@@ -52,6 +52,25 @@
           menu: false,
           message: false,
           hints: true
-        })
+        }),
+        computed:{
+          user(){
+            return this.$store.getters.loggedUser;
+          }
+        },
+        methods:{
+          async logout(){
+            let $_this=this;
+            
+            try{
+             await  $_this.$store.dispatch('logout',{userId:$_this.user.id});
+              $_this.$router.push('/login')
+              
+            }catch(e){
+              console.log(e);
+            }
+            
+          }
+        }
     }
 </script>

@@ -1,0 +1,193 @@
+<template>
+    <v-layout row justify-center align-center>
+      <v-flex md6 xs12>
+        <v-card class="mt-5">
+              <div class="text-md-center pt-3">
+                  <v-avatar :tile="false" size="75px" class="grey lighten-4">
+                      <img src="/v.png" alt="Ticketeando" title="Ticketeando">
+                  </v-avatar>
+              </div>
+              
+          <v-card-text>
+              
+                  <div v-if="loginForm">
+                    <v-form v-model="valid" ref="loginForm" lazy-validation>
+                      <v-text-field
+                          label="Correo electronico"
+                          v-model="email"
+                          :rules="emailRules"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          label="Contraseña"
+                          v-model="password"
+                          :rules="[v => !!v || 'Contraseña es requerida']"
+                          type="password"
+                          required
+                        ></v-text-field>
+                      
+                      
+                      <div class="text-md-right text-xs-right">
+                          <v-btn
+                              @click="loginForm = !loginForm"
+                              flat
+                              small
+                              color="primary">
+                              Recuperar contraseña
+                          </v-btn>
+                      </div>
+                    </v-form>
+                  </div> 
+                  <div v-else>
+                    <v-form v-model="valid" ref="forgotForm" lazy-validation>
+                      <v-text-field
+                          label="Correo electronico"
+                          v-model="email"
+                          :rules="emailRules"
+                          required
+                        ></v-text-field>
+                      <div class="text-md-right text-xs-right">
+                          <v-btn
+                              @click="loginForm = !loginForm"
+                              flat
+                              small
+                              color="primary">
+                              Acceder
+                          </v-btn>
+                      </div>
+                    </v-form>
+                  </div>
+                
+          </v-card-text>
+          <v-card-actions>
+              <div v-if="loginForm">
+                  <v-btn
+                      @click="login"
+                      :disabled="!valid" 
+                      color="primary">
+                      Ingresar
+                  </v-btn>
+              </div>
+              <div v-else>
+                  <v-btn
+                      @click="forgot"
+                      :disabled="!valid" 
+                      color="primary">
+                      Enviar
+                  </v-btn>
+              </div>
+              <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+      </v-layout>
+</template>
+<script>
+
+
+    export default{
+        middleware:'anonymus',
+        layout: 'login',
+        data:()=>({
+          
+            title:"Acceso a ticketeando",
+            loading:false,
+            loginForm:true,
+            valid: true,
+            email: '',
+            emailRules: [
+                v => !!v || 'Correo electronico  es requerido',
+                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo no es valido'
+            ],
+            password: '',
+            
+        }),
+        methods: {
+          
+          async login() {
+            let $_this= this;
+            $_this.loading=true;
+            try {
+              
+              await this.$store.dispatch('login', {
+                email: $_this.email,
+                password: $_this.password
+              });
+              
+              $_this.loading=false;
+              $_this.$router.push('/dashboard')
+              
+            } catch (e) {
+              console.log(e.message);
+              $_this.loading=false
+            }
+          },
+          async logout() {
+            try {
+              await this.$store.dispatch('logout')
+            } catch (e) {
+              this.formError = e.message
+            }
+          }
+        },
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          /*
+          submit () {
+            if (this.$refs.loginForm.validate()) {
+                let $this = this;
+                $this.loading=true;
+                
+                $this.$axios({
+                  method: 'post',
+                  url: $this.$store.state.endpoint+'auth',
+                  data: {
+                    email: $this.email,
+                    password: $this.password,
+                  }
+                }).then(function (res) {
+                    $this.$store.dispatch('login',{token:res.data.token} ).then(stored =>{
+                    console.log(atob(res.data.token));
+                    $this.loading=false;
+                      
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    $this.loading=false;
+                })
+                
+      
+            }
+          },
+          forgot () {
+              if (this.$refs.forgotForm.validate()) {
+                  axios.post('/api/submit', {
+                    email: this.email,
+                })
+              }
+          }
+          */
+        head () {
+          return {
+            title: this.title,
+            meta: [
+              { hid: 'description', name: 'description', content: 'Acceso a ticketeando software de mesa de ayuda' }
+            ]
+          }
+        }
+    }
+</script>

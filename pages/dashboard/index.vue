@@ -9,8 +9,11 @@
 <script>
 
 export default {
+    middleware: 'guard',
+    
     data:()=>({
-      title:'Panel de control'
+      title:'Panel de control',
+      
     }),
     head () {
       return {

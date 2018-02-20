@@ -1,11 +1,11 @@
 <template>
-    <nav>
+    <nav v-if="isAuthenticated">
       <v-navigation-drawer
           fixed
           clipped
           v-model="drawer"
           :mini-variant="mini"
-          class="nav"
+          class="nav elevation-0"
           width="240"
           app>
       <v-list>
@@ -19,7 +19,7 @@
             <img src="https://randomuser.me/api/portraits/men/85.jpg" >
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Andres Arbelaez Acevedo</v-list-tile-title>
+            <v-list-tile-title>{{user.name}}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon @click.stop="mini = !mini">
@@ -44,41 +44,42 @@
             <v-toolbar-side-icon @click.stop="drawer = !drawer" class="icons"></v-toolbar-side-icon>
             <v-toolbar-title class="white--text">Ticketeando</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon class="icons">
-                <v-badge color="accent" overlap>
-                  <span slot="badge">6</span>
-                      <v-icon>{{(hasNotification ? 'notifications_active':'notifications')}}</v-icon>
-                </v-badge>
-            </v-btn>
+            <Notifications/>
             <UserMenu/>
         </v-toolbar>
     </nav>
 </template>
 <script>
 import UserMenu from '~/components/controls/UserMenu.vue';
+import Notifications from '~/components/controls/Notifications.vue';
+import { mapGetters } from 'vuex'
 
     export default{
-        data(){
-            return {
-                hasNotification:false,
-                drawer: true,
-                menuItems: [
-                  { title: 'Inicio', icon: 'dashboard' },
-                  { title: 'Mis tickets', icon: 'bug_report' }
-                ],
-                mini: false,
-            }
+        data:()=>({
+              hasNotification:false,
+              drawer: true,
+              menuItems: [
+                { title: 'Inicio', icon: 'dashboard' },
+                { title: 'Mis tickets', icon: 'bug_report' }
+              ],
+              mini: false,
+              
+        }),
+        
+        computed:{
+          user(){
+            return this.$store.getters.loggedUser || {}; 
+          },
+          ...mapGetters(['isAuthenticated'])
         },
         components:{
-          UserMenu
+          UserMenu,
+          Notifications
         }
     }
 </script>
 <style scoped>
     .nav{
       background-color:#f8f8f8;
-    }
-    .icons{
-      color:#BCAAA4;
     }
 </style>

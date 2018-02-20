@@ -5,6 +5,17 @@ const nodeExternals = require('webpack-node-externals')
 module.exports = {
   mode: 'universal',
 
+  router: {
+     extendRoutes (routes, resolve) {
+      routes.push({
+        name: 'redirect',
+        path: '/',
+        component: resolve(__dirname, 'pages/login/index.vue')
+      })
+    },
+    middleware: 'check-auth'
+  },
+
   /*
   ** Headers of the page
   */
@@ -24,7 +35,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#ff0000' },
 
   /*
   ** Global CSS
@@ -37,7 +48,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify'
+    '@/plugins/vuetify',
+    '@/plugins/axios',
   ],
 
   /*
@@ -51,8 +63,8 @@ module.exports = {
   /*
   ** Axios module configuration
   */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
+ axios: {
+    
   },
 
   /*
