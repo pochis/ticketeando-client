@@ -16,7 +16,7 @@
         </v-list-tile>
         <v-list-tile avatar tag="div">
           <v-list-tile-avatar>
-            <img src="https://randomuser.me/api/portraits/men/85.jpg" >
+            <img src="https://randomuser.me/api/portraits/men/85.jpg"  :alt="user.name" :title="user.name">
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>{{user.name}}</v-list-tile-title>
@@ -30,7 +30,7 @@
       </v-list>
       <v-list dense>
         <v-divider light></v-divider>
-        <v-list-tile v-for="menu in menuItems" :key="menu.title">
+        <v-list-tile v-for="menu in menuItems" :key="menu.title" :title="menu.title" :to="menu.path">
           <v-list-tile-action>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-tile-action>
@@ -59,16 +59,16 @@ import { mapGetters } from 'vuex'
               hasNotification:false,
               drawer: true,
               menuItems: [
-                { title: 'Inicio', icon: 'dashboard' },
-                { title: 'Mis tickets', icon: 'bug_report' }
+                { title: 'Panel de control', icon: 'dashboard', path:'/dashboard'},
+                { title: 'Mis tickets', icon: 'bug_report', path:'/tickets'}
               ],
-              mini: false,
+              mini: true,
               
         }),
         
         computed:{
           user(){
-            return this.$store.getters.loggedUser || {}; 
+            return this.$store.getters.loggedUser; 
           },
           ...mapGetters(['isAuthenticated'])
         },

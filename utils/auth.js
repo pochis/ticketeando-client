@@ -17,14 +17,16 @@ export const setToken = (token) => {
 export const unsetToken = () => {
   if (process.SERVER_BUILD) return
   window.localStorage.removeItem('token');
-  Cookie.remove('token');
+  Cookie.remove('token', { path: '/' });
 }
 
 export const getUserFromCookie = (req) => {
   if (!req.headers.cookie) return
   const tokenCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith('token='))
   if (!tokenCookie) return
-  const user = Buffer.from(tokenCookie.split('=')[1], 'base64').toString().split('~');
+ 
+  const user = Buffer.from(tokenCookie.split('token=')[1], 'base64').toString().split('~');
+
   return JSON.parse(user[0]);
 }
 
@@ -36,7 +38,7 @@ export const getUserFromLocalStorage = () => {
 export const getTokenFromCookie = (req) =>{
   if (!req.headers.cookie) return
   const tokenCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith('token='))
-  return tokenCookie.split('=')[1]
+  return tokenCookie.split('token=')[1]
 }
 export const getTokenFromLocalStorage = () => {
   return window.localStorage.token

@@ -1,7 +1,7 @@
 <template>
   <v-app>
       <Nav/>
-      <v-content>
+      <v-content v-if="isAuthenticated">
        <v-container>
         <nuxt />
        </v-container>
@@ -11,6 +11,7 @@
 
 <script>
   import Nav from '~/components/Nav.vue';
+  import { mapGetters } from 'vuex'
   
   export default {
     data() {
@@ -20,6 +21,9 @@
     },
     components:{
       Nav
+    },
+    computed:{
+      ...mapGetters(['isAuthenticated'])
     }
   }
 </script>
