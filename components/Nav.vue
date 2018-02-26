@@ -16,7 +16,7 @@
         </v-list-tile>
         <v-list-tile avatar tag="div">
           <v-list-tile-avatar>
-            <img src="https://randomuser.me/api/portraits/men/85.jpg"  :alt="user.name" :title="user.name">
+            <img :src="(user.image) ? $store.state.assetUrl+'static/user/'+user.id+'/medium/'+user.image: $store.state.assetUrl+'static/user/default.png'" :alt="user.name" :title="user.name">
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>{{user.name}}</v-list-tile-title>

@@ -1,6 +1,6 @@
 'use strict';
 import axios from 'axios'
-import { setToken,unsetToken } from '~/utils/auth'
+import { setSession,unsetSession } from '~/utils/auth'
 
 const state={
     user: null,
@@ -31,11 +31,13 @@ const actions={
     try {
       const auth=await axios.post(rootState.endpoint+'auth', { email, password })
       
-      var json =atob(auth.data.token).split('~');
-      json =JSON.parse(json[0])
-      setToken(auth.data.token);
       
-      commit('SET_USER', json);
+      setSession({
+        token:auth.data.token,
+        user:btoa(JSON.stringify(auth.data.user))
+      });
+      
+      commit('SET_USER', auth.data.user);
       commit('SET_TOKEN', auth.data.token);
       
     } catch (error) {
@@ -51,7 +53,7 @@ const actions={
       const logout= await axios.post(rootState.endpoint+'logout',{ userId },{headers:{Authorization: 'Bearer ' + state.token}});
         commit('SET_USER', null);
         commit('SET_TOKEN', null);
-        unsetToken();
+        unsetSession();
       
     }catch (error){
       if (error.response) {

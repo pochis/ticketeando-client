@@ -7,13 +7,19 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-title>
-                <div @click="uploadImage" class="pointer">
+                <div @click="$refs.userImage.click()" class="pointer">
                     <v-badge bottom overlap color="blue-grey lighten-5 " >
                       <span slot="badge"><v-icon>mode_edit</v-icon></span>
                       <v-avatar size="80px"class="grey lighten-4" >
-                        <img src="/v.png" :alt="user.name" :title="user.name">
+                        <img :src="(user.image) ? $store.state.assetUrl+'static/user/'+user.id+'/medium/'+user.image: $store.state.assetUrl+'static/user/default.png'" :alt="user.name" :title="user.name">
                       </v-avatar>
                     </v-badge>
+                   <input type="file"
+                          ref="userImage"
+                          v-show="false"
+                          @change="uploadImage"
+                          accept="image/x-png,image/gif,image/jpeg" />
+                <v-progress-circular indeterminate color="primary" v-if="uploading"></v-progress-circular>
                 </div>
                  
               <div class="ml-3 hidden-sm-and-down">
@@ -44,16 +50,17 @@
                           v-model="user.cellphone"
                           :rules="[v => (v) ? /^\d+$/.test(v) || 'Telefono solo permite numeros' : true]"
                         ></v-text-field>
-                        <v-radio-group v-model="user.genre" column>
-                          <v-radio label="Maculino" :value="1"></v-radio>
-                          <v-radio label="Femenino" :value="2"></v-radio>
-                        </v-radio-group>
                         <v-text-field
                           label="Correo electronico"
                           v-model="user.email"
                           :rules="emailRules"
+                          disabled
                           required
                         ></v-text-field>
+                        <v-radio-group v-model="user.genre" column>
+                          <v-radio label="Maculino" :value="1"></v-radio>
+                          <v-radio label="Femenino" :value="2"></v-radio>
+                        </v-radio-group>
                         <v-select
                           :items="countries"
                           v-model="user.country_id"
@@ -81,41 +88,70 @@
                           label="--Ciudad--"
                           autocomplete
                         ></v-select>
-                          
-                        <v-text-field
-                          label="Fecha de nacimiento"
-                          v-model="user.birthday"
-                          append-icon="event"
-                          readonly
-                          @click="showPicker=!showPicker"
-                          
-                        ></v-text-field>  
-                        <v-date-picker v-if="showPicker" v-model="user.birthday" locale="es-Es" no-title scrollable></v-date-picker>
-              
-                        
+                        <v-menu
+                          ref="pickermenu"
+                          lazy
+                          :close-on-content-click="false"
+                          v-model="pickermenu"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                          :nudge-right="40"
+                          min-width="290px"
+                          :return-value.sync="user.birthday">
+                          <v-text-field
+                            slot="activator"
+                            label="Fecha de nacimiento"
+                            v-model="user.birthday"
+                            append-icon="event"
+                            readonly
+                          ></v-text-field>
+                          <v-date-picker
+                              v-model="user.birthday" 
+                              min="1950-01-01"
+                              locale="es-Es"
+                              no-title 
+                              scrollable>
+                            <v-spacer></v-spacer>
+                            <v-btn flat color="primary" @click="pickermenu = false">cancelar</v-btn>
+                            <v-btn flat color="primary" @click="$refs.pickermenu.save(date)">Listo</v-btn>
+                          </v-date-picker>
+                        </v-menu>
                       </v-form>
-                
             </v-card-text>
             <v-card-actions>
               <v-btn
                color="primary"
                @click="save"
-               :disabled="!valid"
-              >
+               :disabled="!valid" >
               Guardar
             </v-btn>
+            <v-progress-circular indeterminate color="primary" v-if="saving"></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-flex>
+         <v-snackbar
+            bottom
+            left
+            v-model="snackbar">
+            {{ message }}
+        </v-snackbar>
   </v-layout>
 </template>
 <script>
+
+import { setSession } from '~/utils/auth';
 
     export default{
         middleware:'guard',
         data:()=>({
           valid: true,
-          showPicker: false,
+          pickermenu: false,
+          uploading: false,
+          saving: false,
+          image: null,
+          snackbar: false,
+          message: null,
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
@@ -138,7 +174,6 @@
              })
           })
         },
-        
         computed:{
             user(){
                 return this.$store.getters.loggedUser || {};
@@ -149,8 +184,27 @@
         },
         
         methods:{
-            uploadImage(){
-                console.log('executed...')
+            uploadImage(event){
+              this.image=event.target.files[0];
+              const fd = new FormData();
+              if(!!this.image.name){
+                this.uploading=true;
+                fd.append('image',this.image,this.image.name);
+                fd.append('id',this.user.id);
+                this.$axios.post('user/image/upload',fd,this.axiosConfig).then((res)=>{
+                  this.uploading=false;
+                  this.user.image = res.data.image;
+                  this.$store.commit('SET_USER', this.user);
+                  setSession({
+                    token:this.user.api_token,
+                    user:btoa(JSON.stringify(this.user))
+                  })
+                  
+                }).catch((error)=>{
+                  console.log(error)
+                })
+              }
+                
             },
             getStates(countryId){
               this.$axios.get('region/country/states/'+countryId,this.axiosConfig).then((res)=>{
@@ -164,7 +218,20 @@
             },
             save(){
                 if (this.$refs.form.validate()) {
-                    console.log('saving...')
+                   this.saving=true;
+                   this.$axios.put('user/'+this.user.id,this.user,this.axiosConfig).then((res)=>{
+                      this.saving=false;
+                      this.$store.commit('SET_USER', this.user);
+                      setSession({
+                        token:this.user.api_token,
+                        user:btoa(JSON.stringify(this.user))
+                      });
+                      this.snackbar=true;
+                      this.message=res.data.message
+                   }).catch((error)=>{
+                      this.snackbar=true;
+                      this.message=error
+                   })
                 }
             },
         },

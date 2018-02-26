@@ -8,31 +8,32 @@ const getQueryParams = () => {
   return params
 }
 
-export const setToken = (token) => {
+export const setSession = (payload) => {
   if (process.SERVER_BUILD) return
-  window.localStorage.setItem('token', token);
-  Cookie.set('token', token);
+  window.localStorage.setItem('token', payload.token);
+  window.localStorage.setItem('user', payload.user);
+  Cookie.set('token', payload.token);
+  Cookie.set('user', payload.user);
 }
-
-export const unsetToken = () => {
+export const unsetSession = () => {
   if (process.SERVER_BUILD) return
   window.localStorage.removeItem('token');
+  window.localStorage.removeItem('user');
   Cookie.remove('token', { path: '/' });
+  Cookie.remove('user', { path: '/' });
 }
 
 export const getUserFromCookie = (req) => {
   if (!req.headers.cookie) return
-  const tokenCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith('token='))
-  if (!tokenCookie) return
- 
-  const user = Buffer.from(tokenCookie.split('token=')[1], 'base64').toString().split('~');
-
-  return JSON.parse(user[0]);
+  const userCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith('user='))
+  if (!userCookie) return
+  const user = Buffer.from(userCookie.split('user=')[1], 'base64').toString();
+  return JSON.parse(user);
 }
 
 export const getUserFromLocalStorage = () => {
-  const json = (window.localStorage.token) ? atob(window.localStorage.token).split('~') : null;
-  return json ? JSON.parse(json[0]) : undefined
+  const json = (window.localStorage.user) ? Buffer.from(window.localStorage.user, 'base64').toString() : null;
+  return json ? JSON.parse(json) : undefined
 }
 
 export const getTokenFromCookie = (req) =>{

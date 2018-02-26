@@ -8,79 +8,48 @@
                   </v-avatar>
               </div>
               
-          <v-card-text>
-              
-                  <div v-if="loginForm">
-                    <v-form v-model="valid" ref="loginForm" lazy-validation>
-                      <v-text-field
-                          label="Correo electronico"
-                          v-model="email"
-                          :rules="emailRules"
-                          required
-                        ></v-text-field>
-                        <v-text-field
-                          label="Contraseña"
-                          v-model="password"
-                          :rules="[v => !!v || 'Contraseña es requerida']"
-                          type="password"
-                          required
-                        ></v-text-field>
-                      
-                      
-                      <div class="text-md-right text-xs-right">
-                          <v-btn
-                              @click="loginForm = !loginForm"
-                              flat
-                              small
-                              color="primary">
-                              Recuperar contraseña
-                          </v-btn>
-                      </div>
-                    </v-form>
-                  </div> 
-                  <div v-else>
-                    <v-form v-model="valid" ref="forgotForm" lazy-validation>
-                      <v-text-field
-                          label="Correo electronico"
-                          v-model="email"
-                          :rules="emailRules"
-                          required
-                        ></v-text-field>
-                      <div class="text-md-right text-xs-right">
-                          <v-btn
-                              @click="loginForm = !loginForm"
-                              flat
-                              small
-                              color="primary">
-                              Acceder
-                          </v-btn>
-                      </div>
-                    </v-form>
-                  </div>
+            <v-card-text>
+              <v-form v-model="valid" ref="accessAndForgotform" lazy-validation>
+                 <v-text-field
+                    label="Correo electronico"
+                    v-model="email"
+                    :rules="emailRules"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-if="loginForm"
+                    label="Contraseña"
+                    v-model="password"
+                    :rules="[v => !!v || 'Contraseña es requerida']"
+                    type="password"
+                    required
+                  ></v-text-field>
                 
-          </v-card-text>
-          <v-card-actions>
-              <div v-if="loginForm">
-                  <v-btn
-                      @click="login"
-                      :disabled="!valid" 
-                      color="primary">
-                      Ingresar
-                  </v-btn>
-              </div>
-              <div v-else>
-                  <v-btn
-                      @click="forgot"
-                      :disabled="!valid" 
-                      color="primary">
-                      Enviar
-                  </v-btn>
-              </div>
-              <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
-          </v-card-actions>
+                
+                <div class="text-md-right text-xs-right">
+                    <v-btn
+                        @click="loginForm = !loginForm"
+                        flat
+                        small
+                        color="primary">
+                        {{(loginForm) ? 'Recuperar contraseña':'Acceder'}}
+                    </v-btn>
+                </div>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+                    <v-btn
+                        @click="handleForm"
+                        :disabled="!valid" 
+                        color="primary">
+                        Ingresar
+                    </v-btn>
+                
+                <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+            </v-card-actions>
         </v-card>
       </v-flex>
-      </v-layout>
+    </v-layout>
 </template>
 <script>
 
@@ -104,24 +73,38 @@
         }),
         methods: {
           
-          async login() {
-            let $_this= this;
-            $_this.loading=true;
-            try {
-              
-              await this.$store.dispatch('login', {
-                email: $_this.email,
-                password: $_this.password
-              });
-              
-              $_this.loading=false;
-              $_this.$router.push('/dashboard')
-              
-            } catch (e) {
-              console.log(e.message);
-              $_this.loading=false
+          handleForm() {
+            if (this.$refs.accessAndForgotform.validate()) {
+               
+                if(this.loginForm){
+                  this.login();
+                }else{
+                  this.forgot();
+                }
             }
           },
+          
+          async login(){
+            
+             try {
+                this.loading=true;   
+                await this.$store.dispatch('login', {
+                  email: this.email,
+                  password: this.password
+                });
+                
+                this.loading=false;
+                this.$router.push('/dashboard')
+                
+              } catch (e) {
+                console.log(e);
+                this.loading=false
+              }
+          },
+          forgot() {
+            
+          },
+          
           async logout() {
             try {
               await this.$store.dispatch('logout')
@@ -129,6 +112,7 @@
               this.formError = e.message
             }
           }
+          
         },
           
           
