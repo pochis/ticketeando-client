@@ -41,10 +41,7 @@ const actions={
       commit('SET_TOKEN', auth.data.token);
       
     } catch (error) {
-      if (error.response) {
-        throw new Error('La dirección de correo electrónico o contraseña ingresada es incorrecta. Inténtalo nuevamente.')
-      }
-      throw error
+        throw error
     }
   },
 

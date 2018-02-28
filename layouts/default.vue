@@ -2,9 +2,7 @@
   <v-app>
       <Nav/>
       <v-content v-if="isAuthenticated">
-       <v-container>
         <nuxt />
-       </v-container>
      </v-content>
   </v-app>
 </template>

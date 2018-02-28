@@ -16,7 +16,7 @@
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>{{user.name +' '+user.lastname}}</v-list-tile-title>
-              <v-list-tile-sub-title>Founder of Vuetify.js</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{user.role.name}}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -53,11 +53,11 @@
     <!--dialog-->
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-alert type="success" :value="showSuccessAlert">
-          {{successMsg}}
-        </v-alert>
-        <v-alert type="error" :value="showErrorAlert">
-          {{errorMsg}}
-        </v-alert>
+        {{successMsg}}
+      </v-alert>
+      <v-alert type="error" :value="showErrorAlert">
+        {{errorMsg}}
+      </v-alert>
     <v-card>
       <v-card-title>
         <span class="headline">Cambiar contraseña</span>

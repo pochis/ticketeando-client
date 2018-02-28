@@ -2,6 +2,9 @@
     <v-layout row justify-center align-center>
       <v-flex md6 xs12>
         <v-card class="mt-5">
+          <v-alert type="error" :value="showErrorAlert">
+            {{errorMsg}}
+          </v-alert>
               <div class="text-md-center pt-3">
                   <v-avatar :tile="false" size="75px" class="grey lighten-4">
                       <img src="/v.png" alt="Ticketeando" title="Ticketeando">
@@ -63,6 +66,8 @@
             loading:false,
             loginForm:true,
             valid: true,
+            showErrorAlert: false,
+            errorMsg: null,
             email: '',
             emailRules: [
                 v => !!v || 'Correo electronico  es requerido',
@@ -97,7 +102,9 @@
                 this.$router.push('/dashboard')
                 
               } catch (e) {
-                console.log(e);
+              
+                this.errorMsg = 'La dirección de correo electrónico o contraseña ingresada es incorrecta. Inténtalo nuevamente.';
+                this.showErrorAlert = true;
                 this.loading=false
               }
           },

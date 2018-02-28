@@ -5,7 +5,7 @@
           bottom>
       
       <v-btn icon class="icons" slot="activator">
-        <v-badge color="accent" overlap>
+        <v-badge color="error" overlap>
           <span slot="badge">3</span>
               <v-icon>{{(hasNotification ? 'notifications_active':'notifications')}}</v-icon>
         </v-badge>
