@@ -11,14 +11,6 @@ const store = () => new Vuex.Store({
     assetUrl:'http://ticketeando-server-pochis852.c9users.io/', 
     endpoint:'http://ticketeando-server-pochis852.c9users.io/api/v1/'
   },
-
-  mutations: {
-    
-  },
-
-  actions: {
-    
-  },
   modules:{
       auth
   },

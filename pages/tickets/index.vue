@@ -15,19 +15,7 @@
             </v-toolbar>
             <v-tabs-items v-model="tab">
               <v-tab-item>
-                    <v-data-table
-                    :headers="titles"
-                    :items="items"
-                    class="elevation-1">
-                    <template slot="items" slot-scope="props">
-                      <td>{{ props.item.name }}</td>
-                      <td class="text-xs-right">{{ props.item.calories }}</td>
-                      <td class="text-xs-right">{{ props.item.fat }}</td>
-                      <td class="text-xs-right">{{ props.item.carbs }}</td>
-                      <td class="text-xs-right">{{ props.item.protein }}</td>
-                      <td class="text-xs-right">{{ props.item.iron }}</td>
-                    </template>
-                  </v-data-table>
+                    <DataTable urlSource="tickets"/>
               </v-tab-item>
               <v-tab-item>
                   <v-card flat>
@@ -94,8 +82,8 @@
                             <v-chip v-for="att in filesInfo" :key="att.name">{{att.name}}</v-chip>
                         </p>
                         <p @click="$refs.attaching.click()" class="pointer">
-                            <v-icon>attachment</v-icon> Adjuntar imagen/pdf 
-                            <input type="file" ref="attaching" v-show="false" @change="attach"  multiple accept="application/pdf,image/x-png,image/gif,image/jpeg" />
+                            <v-icon>attachment</v-icon> Adjuntar imagenes
+                            <input type="file" ref="attaching" v-show="false" @change="attach"  multiple accept="image/x-png,image/gif,image/jpeg" />
                         </p>
                         </v-form>
                       </v-card-text>
@@ -121,6 +109,8 @@
     </v-container>
 </template>
 <script>
+import DataTable from '~/components/controls/DataTable.vue';
+
     export default {
          data:()=>({
             tab: null,
@@ -130,39 +120,6 @@
             message: null,
             ticket:{},
             filesInfo:[],
-            titles: [
-                  {
-                    text: 'Dessert (100g serving)',
-                    align: 'left',
-                    sortable: false,
-                    value: 'name'
-                  },
-                  { text: 'Calories', value: 'calories' },
-                  { text: 'Fat (g)', value: 'fat' },
-                  { text: 'Carbs (g)', value: 'carbs' },
-                  { text: 'Protein (g)', value: 'protein' },
-                  { text: 'Iron (%)', value: 'iron' }
-                ],
-                items: [
-                  {
-                    value: false,
-                    name: 'Frozen Yogurt',
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0,
-                    iron: '1%'
-                  },
-                  {
-                    value: false,
-                    name: 'Ice cream sandwich',
-                    calories: 237,
-                    fat: 9.0,
-                    carbs: 37,
-                    protein: 4.3,
-                    iron: '1%'
-                  }
-                ]
          }),
          async asyncData ({ store,$axios }, callback) {
           let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
@@ -179,6 +136,9 @@
              })
           })
         },
+        mounted() {
+         
+        },
         computed:{
             user(){
                 return this.$store.getters.loggedUser;
@@ -188,7 +148,7 @@
             }
         },
          methods:{
-             createTicket(){
+            createTicket(){
                  if(this.$refs.ticketForm.validate()){
                     this.creating=true;
                     let data = this.ticket;
@@ -206,6 +166,7 @@
                         fd.append('description',this.ticket.description);
                         fd.append('category_id',this.ticket.category_id);
                         fd.append('priority_id',this.ticket.priority_id);
+                        fd.append('project_id',this.ticket.project_id);
                         fd.append('user_id',this.user.id);
                         data=fd;
                     }
@@ -228,6 +189,9 @@
                     this.filesInfo.push({name:event.target.files[i].name});
                 }
              }
+         },
+         components:{
+           DataTable
          },
          head () {
           return {
