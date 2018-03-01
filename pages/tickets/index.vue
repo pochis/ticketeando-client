@@ -15,7 +15,7 @@
             </v-toolbar>
             <v-tabs-items v-model="tab">
               <v-tab-item>
-                    <DataTable urlSource="tickets"/>
+                    <TicketDataTable/>
               </v-tab-item>
               <v-tab-item>
                   <v-card flat>
@@ -109,7 +109,7 @@
     </v-container>
 </template>
 <script>
-import DataTable from '~/components/controls/DataTable.vue';
+import TicketDataTable from '~/components/controls/TicketDataTable.vue';
 
     export default {
          data:()=>({
@@ -121,10 +121,10 @@ import DataTable from '~/components/controls/DataTable.vue';
             ticket:{},
             filesInfo:[],
          }),
-         async asyncData ({ store,$axios }, callback) {
-          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
-          
-          $axios.get('type/group/2',config).then((res) => {
+         async asyncData ({ store,$axios,app }, callback) {
+         
+         let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
+         $axios.get('type/group/2',config).then((res) => {
              $axios.get('categories',config).then((res1) => {
                 $axios.get('projects',config).then((res2) => {
                    callback(null, { 
@@ -191,7 +191,7 @@ import DataTable from '~/components/controls/DataTable.vue';
              }
          },
          components:{
-           DataTable
+           TicketDataTable
          },
          head () {
           return {
