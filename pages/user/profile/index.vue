@@ -111,12 +111,13 @@
                             <v-date-picker
                                 v-model="user.birthday" 
                                 min="1950-01-01"
+                                :max="new Date().toISOString().substr(0, 10)"
                                 locale="es-Es"
                                 no-title 
                                 scrollable>
                               <v-spacer></v-spacer>
                               <v-btn flat color="primary" @click="pickermenu = false">cancelar</v-btn>
-                              <v-btn flat color="primary" @click="$refs.pickermenu.save(date)">Listo</v-btn>
+                              <v-btn flat color="primary" @click="$refs.pickermenu.save(user.birthday)">Listo</v-btn>
                             </v-date-picker>
                           </v-menu>
                         </v-form>
