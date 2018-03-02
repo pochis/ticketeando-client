@@ -197,7 +197,7 @@ import TicketDataTable from '~/components/controls/TicketDataTable.vue';
           return {
             title:  'Tickets',
             meta: [
-              { hid: 'description', name: 'description', content: 'Lista de tockets y formulario para la creacion de tickets' }
+              { hid: 'description', name: 'description', content: 'Lista de tickets y formulario para la creacion de tickets' }
             ]
           }
         }
