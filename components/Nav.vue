@@ -29,6 +29,16 @@
         </v-list-tile>
       </v-list>
       <v-divider></v-divider>
+      <v-list dense v-if="loggedUser.role_id==1">
+        <v-list-tile v-for="menu in adminMenuItems" :key="menu.title" :title="menu.title" :to="menu.path">
+          <v-list-tile-action>
+            <v-icon>{{ menu.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ menu.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
       <v-list>
         <v-list-tile v-if="mini" @click="mini = !mini">
           <v-list-tile-action>
@@ -63,16 +73,18 @@ import { mapGetters } from 'vuex'
               menuItems: [
                 { title: 'Panel de control', icon: 'dashboard', path:'/dashboard'},
                 { title: 'Tickets', icon: 'bug_report', path:'/tickets'},
-                { title: 'Mis Proyectos', icon: 'store', path:'/projects'}
+                { title: 'Mis Proyectos', icon: 'business', path:'/projects'}
+              ],
+              adminMenuItems: [
+                { title: 'Agregar usuarios', icon: 'person_add', path:'/user/new'},
+                { title: 'Agregar proyectos', icon: 'location_city', path:'/projects/new'},
+                { title: 'Agregar categorias', icon: 'assignment', path:'/category/new'}
               ],
               mini: false,
               
         }),
         computed:{
-          user(){
-            return this.$store.getters.loggedUser; 
-          },
-          ...mapGetters(['isAuthenticated'])
+          ...mapGetters(['isAuthenticated','loggedUser'])
         },
         components:{
           UserMenu,

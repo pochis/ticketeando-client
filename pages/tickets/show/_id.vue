@@ -6,7 +6,6 @@
             </v-toolbar>
             <v-card>
                 <v-card-text>
-                    
                     <h2 class="title" >Asunto:</h2>
                     <p>{{ticket.subject}}</p>
                     <h3 class="title" >Descripción:</h3>
@@ -41,7 +40,7 @@
                         <v-flex xs12 md2 v-for="file in ticket.files" :key="file.id">
                             <v-card>
                               <v-card-text class="px-0">
-                                  <img v-img="{ group:'1',src:$store.state.assetUrl+'static/ticket/'+ticket.id+'/'+file.file }" :src="$store.state.assetUrl+'static/ticket/'+ticket.id+'/small/'+file.file"/>
+                                  <img v-img="{ group:'attachDetail',src:$store.state.assetUrl+'static/ticket/'+ticket.id+'/'+file.file }" :src="$store.state.assetUrl+'static/ticket/'+ticket.id+'/small/'+file.file"/>
                               </v-card-text>
                             </v-card>
                         </v-flex>
@@ -58,6 +57,7 @@
     import TicketComments from '~/components/controls/TicketComments';
 
     export default {
+        
         validate ({ params }) {
           return /^\d+$/.test(params.id)
         },

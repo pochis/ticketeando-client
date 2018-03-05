@@ -9,9 +9,6 @@
           <v-btn icon>
             <v-icon>search</v-icon>
           </v-btn>
-          <v-btn icon>
-            <v-icon>add</v-icon>
-          </v-btn>
         </v-toolbar>
     <v-layout row wrap>
       <v-flex md3 xs12 v-for="i in 8" :key="`3${i}`">
