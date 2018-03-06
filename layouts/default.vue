@@ -12,11 +12,10 @@
   import { mapGetters } from 'vuex'
   
   export default {
-    data() {
-      return {
-        
-      }
-    },
+    middleware: 'guard',
+    data:()=>({
+      
+    }),
     components:{
       Nav
     },

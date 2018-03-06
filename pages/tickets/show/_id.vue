@@ -61,9 +61,7 @@
         validate ({ params }) {
           return /^\d+$/.test(params.id)
         },
-        data:()=>({
-           
-        }), 
+        data:()=>({}), 
         async asyncData ({params, store,$axios,app }, callback) {
          
          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};

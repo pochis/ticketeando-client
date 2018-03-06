@@ -15,12 +15,12 @@
              :disabled="!valid">
             Agregar comentario
           </v-btn>
-          <p v-if="filesInfo.length">
-              <v-chip v-for="att in filesInfo" :key="att.name">{{att.name}}</v-chip>
-          </p>
-          <p @click="$refs.attaching.click()" class="pointer">
+          <span @click="$refs.attaching.click()" class="pointer">
               <v-icon>attachment</v-icon> Adjuntar imagenes
               <input type="file" ref="attaching" v-show="false" @change="attach"  multiple accept="image/x-png,image/gif,image/jpeg" />
+          </span>
+          <p v-if="filesInfo.length">
+              <v-chip v-for="att in filesInfo" :key="att.name">{{att.name}}</v-chip>
           </p>
         </v-form>
         <h3 class="titlefont mt-5">Comentarios</h3>
@@ -29,17 +29,17 @@
           <li v-for="(comment, index) in commentList" :key="comment.id">
             <p>
               <v-avatar>
-                <img :src="(comment.user.image) ? $store.state.assetUrl+'static/user/'+comment.user.id+'/medium/'+comment.user.image: $store.state.assetUrl+'static/user/default.png'" alt="avatar">
+                <img :src="(comment.user.image) ? $store.state.assetUrl+'static/user/'+comment.user.id+'/medium/'+comment.user.image: $store.state.assetUrl+'static/user/default.png'" :alt="comment.user.namer" :title="comment.user.name">
               </v-avatar>
               <v-chip small label outline color="red">{{comment.user.name+' '+comment.user.lastname}} {{comment.created_at | date}}</v-chip>
-             {{comment.comment}}
             </p>
+             <p>{{comment.comment}}</p>
             <p>
                <v-avatar
+                  v-for="file in comment.files" :key="file.id"
                   :tile="true"
                   size="50px"
-                  class="grey lighten-4 ml-3"
-                  v-for="file in comment.files" :key="file.id">
+                  class="grey lighten-4 ml-3">
                    <img v-img="{ group:'commet_'+index,src:$store.state.assetUrl+'static/comment/'+comment.id+'/'+file.file }" :src="$store.state.assetUrl+'static/comment/'+comment.id+'/small/'+file.file"/>
                 </v-avatar>
             </p>

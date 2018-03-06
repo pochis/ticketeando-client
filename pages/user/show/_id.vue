@@ -1,11 +1,14 @@
 <template>
-   <v-container>
+     <v-container>
       <v-layout row wrap justify-center align-center>
           <v-flex md12 xs12>
           <v-card>
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">{{user.name+' '+user.lastname}}</v-toolbar-title>
                 <v-spacer></v-spacer>
+                <v-btn icon to="/user/list" title="volver  a usuarios">
+                  <v-icon>keyboard_backspace</v-icon>
+                </v-btn>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.userImage.click()" class="pointer">
@@ -15,21 +18,16 @@
                           <img :src="(user.image) ? $store.state.assetUrl+'static/user/'+user.id+'/medium/'+user.image: $store.state.assetUrl+'static/user/default.png'" :alt="user.name" :title="user.name">
                         </v-avatar>
                       </v-badge>
-                     <input type="file"
+                      <input type="file"
                             ref="userImage"
                             v-show="false"
                             @change="uploadImage"
                             accept="image/x-png,image/gif,image/jpeg" />
-                  <v-progress-circular indeterminate color="primary" v-if="uploading"></v-progress-circular>
+                      <v-progress-circular indeterminate color="primary" v-if="uploading"></v-progress-circular>
                   </div>
-                   
-                <div class="ml-3 hidden-sm-and-down">
-                    <h3>{{user.email}}</h3>
-                    <h4>{{user.role.name}}</h4>
-                </div>
               </v-card-title>
               <v-card-text>
-                  <v-form v-model="valid" ref="form" lazy-validation>
+                  <v-form v-model="valid" ref="formUser" lazy-validation>
                           <v-text-field
                             label="Nombre"
                             v-model="user.name"
@@ -90,6 +88,21 @@
                             label="--Ciudad--"
                             autocomplete
                           ></v-select>
+                          <v-select
+                            :items="roles"
+                            v-model="user.role_id"
+                            item-text="name"
+                            item-value="id"
+                            label="--Tipo de usuario--"
+                            :rules="[v => !!v || 'El tipo de usuario es requerido']"
+                            autocomplete
+                          ></v-select>
+                          <v-switch
+                              color="error"
+                              label="Activo"
+                              v-model="user.status"
+                              :value="1"
+                            ></v-switch>
                           <v-menu
                             ref="pickermenu"
                             lazy
@@ -127,7 +140,7 @@
                  color="primary"
                  @click="save"
                  :disabled="!valid" >
-                Guardar
+                Actualizar
               </v-btn>
               <v-progress-circular indeterminate color="primary" v-if="saving"></v-progress-circular>
               </v-card-actions>
@@ -144,10 +157,8 @@
 </template>
 <script>
 
-import { setSession } from '~/utils/auth';
-
-    export default{
-        middleware:'guard',
+    export default {
+        middleware: 'granted',
         data:()=>({
           valid: true,
           pickermenu: false,
@@ -156,94 +167,91 @@ import { setSession } from '~/utils/auth';
           image: null,
           snackbar: false,
           message: null,
+          imagePreview: null,
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'
           ],
+          confirm_validate:(pass)=>{
+             return [v => !!v || 'Confirmación de contraseña es requerida',
+              v => pass===v || 'las contraseñas no coinciden']
+          }
         }),
-       async asyncData ({ store,$axios }, callback) {
-          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}},
-              countryId = store.getters.loggedUser.country_id || 47,
-              stateId = store.getters.loggedUser.state_id || 776;
-          
-          $axios.get('region/countries',config).then((res) => {
-             $axios.get('region/country/states/'+countryId,config).then((res1) => {
-                $axios.get('region/states/cities/'+stateId,config).then((res2) => {
-                   callback(null, { 
-                      countries: res.data.countries,
-                      states: res1.data.states,
-                      cities: res2.data.cities,
-                    });
+        async asyncData ({params, store, $axios }, callback) {
+          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
+             
+          $axios.get('user/'+params.id,config).then((res)=>{
+              $axios.get('region/countries',config).then((res1) => {
+                 $axios.get('region/country/states/'+res.data.user.country_id,config).then((res2) => {
+                    $axios.get('region/states/cities/'+res.data.user.state_id,config).then((res3) => {
+                        $axios.get('type/group/1',config).then((res4)=>{
+                            callback(null, { 
+                              user: res.data.user,
+                              countries: res1.data.countries,
+                              states: res2.data.states,
+                              cities: res3.data.cities,
+                              roles: res4.data.types,
+                            });
+                        })
+                       
+                     })
                  })
-             })
+              })
           })
         },
         computed:{
-            user(){
-                return this.$store.getters.loggedUser || {};
-            },
-            axiosConfig(){
+            headers(){
                 return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
             }
         },
-        
         methods:{
-            uploadImage(event){
+            getStates(countryId){
+              this.$axios.get('region/country/states/'+countryId,this.headers).then((res)=>{
+                  this.states = res.data.states
+              });
+            },
+            getCities(stateId){
+              this.$axios.get('region/states/cities/'+stateId,this.headers).then((res)=>{
+                  this.cities = res.data.cities
+              });
+            },
+            save(){
+                if (this.$refs.formUser.validate()) {
+                    this.saving=true;
+                   this.$axios.put('user/'+this.user.id,this.user,this.headers).then((res)=>{
+                       this.saving=false;
+                       this.snackbar=true;
+                       this.message=res.data.message
+                   }).catch((error)=>{
+                       this.saving=false;
+                       this.snackbar=true;
+                       this.message=error.response.message
+                   })
+                          
+                }
+            },
+             uploadImage(event){
               this.image=event.target.files[0];
               const fd = new FormData();
               if(!!this.image.name){
                 this.uploading=true;
                 fd.append('image',this.image,this.image.name);
                 fd.append('id',this.user.id);
-                this.$axios.post('user/image/upload',fd,this.axiosConfig).then((res)=>{
+                this.$axios.post('user/image/upload',fd,this.headers).then((res)=>{
                   this.uploading=false;
                   this.user.image = res.data.image;
-                  this.$store.commit('SET_USER', this.user);
-                  setSession({
-                    token:this.user.api_token,
-                    user:btoa(JSON.stringify(this.user))
-                  })
-                  
                 }).catch((error)=>{
                   console.log(error)
                 })
               }
                 
             },
-            getStates(countryId){
-              this.$axios.get('region/country/states/'+countryId,this.axiosConfig).then((res)=>{
-                  this.states = res.data.states
-              });
-            },
-            getCities(stateId){
-              this.$axios.get('region/states/cities/'+stateId,this.axiosConfig).then((res)=>{
-                  this.cities = res.data.cities
-              });
-            },
-            save(){
-                if (this.$refs.form.validate()) {
-                   this.saving=true;
-                   this.$axios.put('user/'+this.user.id,this.user,this.axiosConfig).then((res)=>{
-                      this.saving=false;
-                      this.$store.commit('SET_USER', this.user);
-                      setSession({
-                        token:this.user.api_token,
-                        user:btoa(JSON.stringify(this.user))
-                      });
-                      this.snackbar=true;
-                      this.message=res.data.message
-                   }).catch((error)=>{
-                      this.snackbar=true;
-                      this.message=error.response.message
-                   })
-                }
-            },
         },
-        head () {
+         head () {
           return {
-            title:  this.user.name +' '+ this.user.lastname ,
+            title:  this.user.name+' '+this.user.lastname,
             meta: [
-              { hid: 'description', name: 'description', content: 'ticketeando contro de soporte para mesa de ayuda' }
+              { hid: 'description', name: 'description', content: 'Edicion de usuario ticketeando' }
             ]
           }
         }

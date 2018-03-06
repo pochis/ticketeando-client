@@ -72,13 +72,13 @@ import { mapGetters } from 'vuex'
               drawer: true,
               menuItems: [
                 { title: 'Panel de control', icon: 'dashboard', path:'/dashboard'},
-                { title: 'Tickets', icon: 'bug_report', path:'/tickets'},
+                { title: 'Tickets', icon: 'bug_report', path:'/tickets/list'},
                 { title: 'Mis Proyectos', icon: 'business', path:'/projects'}
               ],
               adminMenuItems: [
-                { title: 'Agregar usuarios', icon: 'person_add', path:'/user/new'},
-                { title: 'Agregar proyectos', icon: 'location_city', path:'/projects/new'},
-                { title: 'Agregar categorias', icon: 'assignment', path:'/category/new'}
+                { title: 'Usuarios', icon: 'person', path:'/user/list'},
+                { title: 'Proyectos', icon: 'location_city', path:'/projects/list'},
+                { title: 'Categorias', icon: 'assignment', path:'/category/new'}
               ],
               mini: false,
               

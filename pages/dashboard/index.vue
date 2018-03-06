@@ -58,7 +58,6 @@
 
 import TicketDataTable from '~/components/controls/TicketDataTable.vue';
 export default {
-    middleware: 'guard',
     
     data:()=>({
       title:'Panel de control',
