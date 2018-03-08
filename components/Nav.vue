@@ -78,7 +78,7 @@ import { mapGetters } from 'vuex'
               adminMenuItems: [
                 { title: 'Usuarios', icon: 'person', path:'/user/list'},
                 { title: 'Proyectos', icon: 'location_city', path:'/projects/list'},
-                { title: 'Categorias', icon: 'assignment', path:'/category/new'}
+                { title: 'Categorias', icon: 'assignment', path:'/category/list'}
               ],
               mini: false,
               

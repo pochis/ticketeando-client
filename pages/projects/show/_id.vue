@@ -4,7 +4,7 @@
           <v-flex md12 xs12>
           <v-card>
               <v-toolbar color="accent" height="45px" flat>
-                <v-toolbar-title class="title_toolbar">Nuevo proyecto</v-toolbar-title>
+                <v-toolbar-title class="title_toolbar">{{ project.name }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon to="/projects/list" title="volver a proyectos">
                    <v-icon>keyboard_backspace</v-icon>
@@ -15,14 +15,15 @@
                       <v-badge bottom overlap color="blue-grey lighten-5 " >
                         <span slot="badge"><v-icon>mode_edit</v-icon></span>
                         <v-avatar size="80px"class="grey lighten-4" >
-                          <img :src="(imagePreview) ? imagePreview : $store.state.assetUrl+'static/project/default.png'" alt="Imagen de proyecto" title="Imagen de proyecto">
+                          <img :src="(project.image) ? $store.state.assetUrl+'static/project/'+project.id+'/medium/'+project.image: $store.state.assetUrl+'static/project/default.png'" :alt="project.name" :title="project.name">
                         </v-avatar>
                       </v-badge>
-                     <input type="file"
+                      <input type="file"
                             ref="projectImage"
                             v-show="false"
-                            @change="addProjectImage"
+                            @change="uploadImage"
                             accept="image/x-png,image/gif,image/jpeg" />
+                      <v-progress-circular indeterminate color="primary" v-if="uploading"></v-progress-circular>
                   </div>
               </v-card-title>
               <v-card-text>
@@ -42,6 +43,7 @@
                             label="Correo electronico"
                             v-model="project.email"
                             :rules="emailRules"
+                            disabled
                             required
                           ></v-text-field>
                           <v-text-field
@@ -65,7 +67,7 @@
                               color="error"
                               label="Activo"
                               v-model="project.status"
-                              value="1"
+                              :value="1"
                             ></v-switch>
                         </v-form>
               </v-card-text>
@@ -96,16 +98,22 @@
         data:()=>({
           valid: true,
           saving: false,
+          uploading: false,
+          image: null,
           snackbar: false,
           message: null,
-          imagePreview: null,
-          project:{status:0},
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'
           ]      
         }),
-        
+        async asyncData ({params, store, $axios }, callback) {
+          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
+             
+          $axios.get('project/'+params.id,config).then((res)=>{
+                callback(null, {project: res.data.project});
+          })
+        },
         computed:{
             headers(){
                 return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
@@ -115,28 +123,11 @@
             
             save(){
                 if (this.$refs.formProject.validate()) {
-                    let data = this.project;
                     this.saving=true;
-                   if(!!this.project.image){
-                        const fd = new FormData();
-                        fd.append('image', this.project.image, this.project.image.name);
-                        fd.append('name', this.project.name);
-                        fd.append('website',  this.project.website);
-                        fd.append('address',  this.project.address);
-                        fd.append('email', this.project.email);
-                        fd.append('contact_phone', this.project.contact_phone);
-                        fd.append('status', this.project.status);
-                        if(!!this.project.cellphone){
-                            fd.append('contact_cellphone', this.project.contact_cellphone);
-                        }
-                        data = fd;
-                   }
-                   this.$axios.post('project',data,this.headers).then((res)=>{
+                    this.$axios.put('project/'+this.project.id,this.project,this.headers).then((res)=>{
                        this.saving=false;
                        this.snackbar=true;
                        this.message=res.data.message;
-                       this.imagePreview=null;
-                       this.$refs.formProject.reset();
                    }).catch((error)=>{
                        this.saving=false;
                        this.snackbar=true;
@@ -149,25 +140,29 @@
                           
                 }
             },
-            addProjectImage(event){
-                let input = event.target;
-                
-                if (input.files && input.files[0]) {
-                    
-                    let reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.project.image= input.files[0];
-                        this.imagePreview = e.target.result;
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
+            uploadImage(event){
+              this.image=event.target.files[0];
+              const fd = new FormData();
+              if(!!this.image.name){
+                this.uploading=true;
+                fd.append('image',this.image,this.image.name);
+                fd.append('id',this.project.id);
+                this.$axios.post('project/image/upload',fd,this.headers).then((res)=>{
+                  this.uploading=false;
+                  this.project.image = res.data.image;
+                }).catch((error)=>{
+                  console.log(error)
+                })
+              }
+            },
          },
-         head:()=>({
-            title:  'Nuevo Proyecto',
-            meta: [
-              { hid: 'description', name: 'description', content: 'ticketeando contro de soporte para mesa de ayuda' }
-            ]
-         })
+         head(){
+            return {
+                title:  this.project.name,
+                meta: [
+                  { hid: 'description', name: 'description', content: 'Edicion de proyecto' }
+                ]
+            }
+         }
     }
 </script>

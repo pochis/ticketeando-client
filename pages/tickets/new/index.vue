@@ -72,10 +72,10 @@
             <p v-if="filesInfo.length">
                 <v-chip v-for="att in filesInfo" :key="att.name">{{att.name}}</v-chip>
             </p>
-            <p @click="$refs.attaching.click()" class="pointer">
+            <span @click="$refs.attaching.click()" class="pointer">
                 <v-icon>attachment</v-icon> Adjuntar imagenes
                 <input type="file" ref="attaching" v-show="false" @change="attach"  multiple accept="image/x-png,image/gif,image/jpeg" />
-            </p>
+            </span>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -114,8 +114,8 @@
          
          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
          $axios.get('type/group/2',config).then((res) => {
-             $axios.get('categories',config).then((res1) => {
-                $axios.get('projects',config).then((res2) => {
+             $axios.get('categories/0/200?sortBy=id&sortType=desc',config).then((res1) => {
+                $axios.get('projects/0/200?sortBy=id&sortType=desc',config).then((res2) => {
                    callback(null, { 
                       priorities: res.data.types,
                       categories: res1.data.categories,

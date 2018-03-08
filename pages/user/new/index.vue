@@ -175,7 +175,6 @@
           valid: true,
           pickermenu: false,
           saving: false,
-          image: null,
           snackbar: false,
           message: null,
           imagePreview: null,

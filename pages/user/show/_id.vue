@@ -167,7 +167,6 @@
           image: null,
           snackbar: false,
           message: null,
-          imagePreview: null,
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'
@@ -230,7 +229,7 @@
                           
                 }
             },
-             uploadImage(event){
+            uploadImage(event){
               this.image=event.target.files[0];
               const fd = new FormData();
               if(!!this.image.name){

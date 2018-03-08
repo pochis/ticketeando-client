@@ -3,6 +3,10 @@
         <v-layout column>
             <v-toolbar color="accent" tabs height="45px">
               <v-toolbar-title class="title_toolbar">Ticket {{ticket.title}}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon to="/tickets/list" title="volver a tickets">
+                 <v-icon>keyboard_backspace</v-icon>
+              </v-btn>
             </v-toolbar>
             <v-card>
                 <v-card-text>

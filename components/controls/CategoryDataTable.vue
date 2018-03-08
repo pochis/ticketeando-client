@@ -26,23 +26,16 @@
         class="elevation-1">
            
         <template slot="items" slot-scope="props">
-          <td><nuxt-link :to="{name: 'projects-show-id', params: { id: props.item.id }}">{{ props.item.id }}</nuxt-link></td>
+          <td><nuxt-link :to="{name: 'category-show-id', params: { id: props.item.id }}">{{ props.item.id }}</nuxt-link></td>
           <td class="text-xs-left">{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.email }}</td>
-          <td class="text-xs-left">
-            <a v-if="!!props.item.website" :href="props.item.website" :title=" props.item.name" target="_blank">{{ props.item.website }}</a>
-          </td>
-          <td class="text-xs-left">{{ props.item.address }}</td>
-          <td class="text-xs-left">{{ props.item.contact_phone }}</td>
-          <td class="text-xs-left">{{ props.item.contact_cellphone }}</td>
-          <td class="text-xs-left">{{ (props.item.status==1) ?"Activo":"Inactivo" }}</td>
+          <td class="text-xs-left">{{ (props.item.has_parent) ? props.item.has_parent.name: ''  }}</td>
           <td class="text-xs-left">{{ props.item.created_at | date}}</td>
           <td class="text-xs-left">{{ props.item.updated_at | date}}</td>
-          <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" :to="{name: 'projects-show-id', params: { id: props.item.id }}">
+          <td class="text-xs-left layout px-0">
+          <v-btn icon class="mx-0" :to="{name: 'category-show-id', params: { id: props.item.id }}">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
-          <v-btn icon class="mx-0" @click="deleteProject(props.item.id)">
+          <v-btn icon class="mx-0" @click="deleteCategory(props.item.id)">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
@@ -76,15 +69,10 @@ import moment from 'moment'
           titles: [
                 { text: 'ID', value: 'id' },
                 { text: 'Nombre',align: 'left',value: 'name'},
-                { text: 'Correo', value: 'email' },
-                { text: 'Sitio web', value: 'website' },
-                { text: 'Dirección', value: 'address' },
-                { text: 'Telefono contacto', value: 'contact_phone' },
-                { text: 'Celular contacto', value: 'contact_cellphone' },
-                { text: 'Estado', value: 'status' },
+                { text: 'Categoria padre',align: 'left',value: 'parent'},
                 { text: 'Creado', value: 'created_at' },
                 { text: 'Actualizado', value: 'updated_at' },
-                { text: 'Acciones', value: 'action', sortable: false }
+                { text: 'Acciones',value: 'action', sortable: false }
           ],
         }),
         computed:{
@@ -120,7 +108,7 @@ import moment from 'moment'
             this.loading = true;
             this.offset=(page - 1) * rowsPerPage;
             this.limit = rowsPerPage;
-            let endpoint='projects/'+this.offset+"/"+this.limit;
+            let endpoint='categories/'+this.offset+"/"+this.limit;
             
             /*sorting*/
             if (descending) {
@@ -142,7 +130,7 @@ import moment from 'moment'
             
             return this.$axios.get(endpoint,this.headers).then((res)=>{
                       
-                let items = res.data.projects;
+                let items = res.data.categories;
                 const total = res.data.total;
                 
                 this.loading = false
@@ -152,8 +140,8 @@ import moment from 'moment'
                     console.log(error.response.message);
                 });
           },
-          deleteProject(id){
-            console.log("borrando proyecto")
+          deleteCategory(id){
+            console.log("borrando categoria")
           }
         }
     }
