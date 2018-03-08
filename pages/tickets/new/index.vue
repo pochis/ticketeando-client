@@ -125,9 +125,6 @@
              })
           })
         },
-        mounted() {
-         
-        },
         computed:{
             user(){
                 return this.$store.getters.loggedUser;

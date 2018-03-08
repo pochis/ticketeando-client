@@ -4,8 +4,9 @@
       <v-toolbar  color="accent" height="45px">
           <v-toolbar-title class="title_toolbar">Usuarios</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon to="/user/new" title="Agregar usuario">
+          <v-btn outline small color="primary" to="/user/new">
            <v-icon>person_add</v-icon>
+           Agregar usuario
           </v-btn>
       </v-toolbar>
       <UserDataTable/>

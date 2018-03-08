@@ -4,8 +4,9 @@
       <v-toolbar  color="accent" height="45px">
           <v-toolbar-title class="title_toolbar">Categorias</v-toolbar-title>
           <v-spacer></v-spacer>
-            <v-btn icon to="/category/new" title="Agregar Categoria">
+            <v-btn outline small color="primary" to="/category/new">
               <v-icon>assignment</v-icon>
+              Agregar Categoria
             </v-btn>
       </v-toolbar>
       <CategoryDataTable/>
