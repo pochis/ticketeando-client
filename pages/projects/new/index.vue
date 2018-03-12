@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">Nuevo proyecto</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/projects/list" title="volver a proyectos">
-                   <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.projectImage.click()" class="pointer">
@@ -99,7 +97,7 @@
           snackbar: false,
           message: null,
           imagePreview: null,
-          project:{status:0},
+          project:{status:0,address:''},
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'

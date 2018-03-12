@@ -5,9 +5,7 @@
       <v-toolbar  color="accent" height="45px">
           <v-toolbar-title class="title_toolbar">Nuevo Ticket</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon to="/tickets/list" title="volver a tickets">
-             <v-icon>keyboard_backspace</v-icon>
-          </v-btn>
+          <BackButton/>
       </v-toolbar>
       <v-card flat>
           <v-card-text>

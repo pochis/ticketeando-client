@@ -9,15 +9,20 @@
             Agregar Ticket
           </v-btn>
       </v-toolbar>
-      <TicketDataTable/>
+      <TicketDataTable :filters="datatableFilter"/>
     </v-flex>
    </v-layout>
 </template>
 <script>
-    import TicketDataTable from '~/components/controls/TicketDataTable'
+    import TicketDataTable from '~/components/datatable/TicketDataTable'
     export default {
         components:{
             TicketDataTable
+        },
+        computed:{
+         datatableFilter(){
+              return {user:this.$store.getters.loggedUser.id}
+          }
         },
         head () {
           return {

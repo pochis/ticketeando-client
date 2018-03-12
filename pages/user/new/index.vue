@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">Nuevo usuario</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/user/list" title="volver a usuarios">
-                   <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.userImage.click()" class="pointer">
@@ -80,7 +78,7 @@
                             item-value="id"
                             label="--Pais--"
                             :rules="[v => !!v || 'El pais es requerido']"
-                            @change="getStates($event)"
+                            @change="getStates"
                             autocomplete
                           ></v-select>
                           <v-select
@@ -89,7 +87,7 @@
                             item-text="name"
                             item-value="id"
                             label="--Departamento--"
-                            @change="getCities($event)"
+                            @change="getCities"
                             autocomplete
                           ></v-select>
                           <v-select
@@ -152,8 +150,8 @@
                  color="primary"
                  @click="save"
                  :disabled="!valid" >
-                Guardar
-              </v-btn>
+                  Guardar
+                </v-btn>
               <v-progress-circular indeterminate color="primary" v-if="saving"></v-progress-circular>
               </v-card-actions>
             </v-card>

@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">{{category.name}}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/category/list" title="volver a categorias">
-                   <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-text>
                   <v-form v-model="valid" ref="formCategory" lazy-validation>
@@ -65,7 +63,9 @@
               $axios.get('categories/0/200?sortBy=id&sortType=desc',config).then((res1)=>{
                     callback(null, {category:res.data.category,categories: res1.data.categories});
               })
-          }) 
+          }).catch((e) => {
+             callback({ statusCode: 404, message: 'Categoria no encontrada' })
+          })
           
         },
         computed:{

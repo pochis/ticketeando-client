@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">{{user.name+' '+user.lastname}}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/user/list" title="volver  a usuarios">
-                  <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.userImage.click()" class="pointer">
@@ -196,6 +194,8 @@
                      })
                  })
               })
+          }).catch((e) => {
+            callback({ statusCode: 404, message: 'Usuario no encontrado' })
           })
         },
         computed:{

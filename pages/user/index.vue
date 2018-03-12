@@ -14,7 +14,7 @@
    </v-layout>
 </template>
 <script>
-    import UserDataTable from '~/components/controls/UserDataTable'
+    import UserDataTable from '~/components/datatable/UserDataTable'
     export default {
         middleware: 'granted',
         data:()=>({

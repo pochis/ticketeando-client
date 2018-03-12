@@ -107,12 +107,16 @@
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'
           ]      
         }),
-        async asyncData ({params, store, $axios }, callback) {
+        async asyncData ({params,store,$axios,error}) {
           let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
-             
-          $axios.get('project/'+params.id,config).then((res)=>{
-                callback(null, {project: res.data.project});
-          })
+          
+          return $axios.get('project/'+params.id,config)
+                .then((res) => {
+                  return {project: res.data.project}
+                })
+                .catch((e) => {
+                  error({ statusCode: 404, message: 'Proyecto no encontrado' })
+                })
         },
         computed:{
             headers(){

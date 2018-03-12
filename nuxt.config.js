@@ -52,6 +52,7 @@ module.exports = {
     '@/plugins/vuetify',
     '@/plugins/axios',
     '@/plugins/v-image',
+    '@/plugins/components'
   ],
 
   /*

@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">Nueva categoria</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/category/list" title="volver a categorias">
-                   <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-text>
                   <v-form v-model="valid" ref="formCategory" lazy-validation>

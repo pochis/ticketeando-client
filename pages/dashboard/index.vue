@@ -47,7 +47,7 @@
       <v-toolbar  color="accent" height="45px">
           <v-toolbar-title class="title_toolbar">Mis tickets</v-toolbar-title>
       </v-toolbar>
-      <TicketDataTable/>
+      <TicketDataTable :filters="datatableFilter"/>
     </v-flex>
   </v-layout>
   </v-container>
@@ -56,7 +56,7 @@
 
 <script>
 
-import TicketDataTable from '~/components/controls/TicketDataTable.vue';
+import TicketDataTable from '~/components/datatable/TicketDataTable.vue';
 export default {
     
     data:()=>({
@@ -64,6 +64,11 @@ export default {
     }),
     components:{
       TicketDataTable
+    },
+    computed:{
+      datatableFilter(){
+          return {user:this.$store.getters.loggedUser.id}
+      }
     },
     head () {
       return {

@@ -28,8 +28,9 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <v-divider></v-divider>
       <v-list dense v-if="loggedUser.role_id==1">
+      <v-divider></v-divider>
+       <v-subheader>Menu administrador</v-subheader>
         <v-list-tile v-for="menu in adminMenuItems" :key="menu.title" :title="menu.title" :to="menu.path">
           <v-list-tile-action>
             <v-icon>{{ menu.icon }}</v-icon>
@@ -52,7 +53,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-        <v-toolbar color="primary" height="45px" fixed  app>
+        <v-toolbar height="45px" fixed  app>
             <v-toolbar-side-icon @click.stop="drawer = !drawer" class="icons hidden-lg-and-up"></v-toolbar-side-icon>
             <v-spacer></v-spacer>
             <Notifications/>
@@ -72,13 +73,14 @@ import { mapGetters } from 'vuex'
               drawer: true,
               menuItems: [
                 { title: 'Panel de control', icon: 'dashboard', path:'/dashboard'},
-                { title: 'Tickets', icon: 'bug_report', path:'/tickets/list'},
-                { title: 'Mis Proyectos', icon: 'business', path:'/projects'}
+                { title: 'Tickets', icon: 'bug_report', path:'/tickets'},
+                { title: 'Mis Proyectos', icon: 'business', path:'/projects/list'}
               ],
               adminMenuItems: [
-                { title: 'Usuarios', icon: 'person', path:'/user/list'},
-                { title: 'Proyectos', icon: 'location_city', path:'/projects/list'},
-                { title: 'Categorias', icon: 'assignment', path:'/category/list'}
+                { title: 'Usuarios', icon: 'person', path:'/user'},
+                { title: 'Proyectos', icon: 'location_city', path:'/projects'},
+                { title: 'Categorias', icon: 'assignment', path:'/category'},
+                { title: 'Reporte de tickets', icon: 'bug_report', path:'/tickets/queue'},
               ],
               mini: false,
               

@@ -6,6 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">{{user.name+' '+user.lastname}}</v-toolbar-title>
                 <v-spacer></v-spacer>
+                <BackButton/>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.userImage.click()" class="pointer">

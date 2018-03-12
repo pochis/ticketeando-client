@@ -33,7 +33,7 @@
           <td class="text-xs-left">{{ (props.item.owner[0]) ? props.item.owner[0].name +' '+props.item.owner[0].lastname : 'No asignado'  }}</td>
           <td class="text-xs-left">{{ props.item.category.name }}</td>
           <td class="text-xs-left">{{ props.item.created_at | date}}</td>
-          <td class="text-xs-left">{{ props.item.priority.name }}</td>
+          <td class="text-xs-left" :class="{ 'red white--text': (props.item.priority_id==3), 'yellow': (props.item.priority_id==4) }">{{ props.item.priority.name }}</td>
           <td class="text-xs-left">{{ props.item.updated_at | date}}</td>
         </template>
         <template slot="pageText" slot-scope="props">
@@ -47,6 +47,13 @@
 import moment from 'moment'
 
     export default {
+      
+        props:{
+          filters:{
+            type:Object,
+          }
+        },
+        
         filters:{
           date(value) {
             if (value) {
@@ -75,11 +82,11 @@ import moment from 'moment'
           ],
         }),
         computed:{
-          user() {
-            return this.$store.getters.loggedUser;  
-          },
            headers(){
-                return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
+                return {
+                  headers:{'Authorization': 'Bearer '+this.$store.state.auth.token},
+                  params:this.filters || {}
+                }
           }
         },
         watch: {
@@ -107,23 +114,24 @@ import moment from 'moment'
             this.loading = true;
             this.offset=(page - 1) * rowsPerPage;
             this.limit = rowsPerPage;
-            let endpoint='tickets/'+this.user.id+'/'+this.offset+"/"+this.limit;
+            let endpoint='tickets/'+this.offset+"/"+this.limit;
             
             
             /*sorting*/
             if (descending) {
                 if(sortBy){
-                  this.headers.params={sortBy:sortBy,sortType:'asc'}
+                   Object.assign(this.headers.params, {sortBy:sortBy,sortType:'asc'}); 
                 }
              } else {
                if(sortBy){
-                 this.headers.params={sortBy:sortBy,sortType:'desc'}
+                   Object.assign(this.headers.params, {sortBy:sortBy,sortType:'desc'}); 
+                 
                 }
              }
              
             /*add search as parameter*/
             if(!!this.search){
-              this.headers.params.search=this.search
+               Object.assign(this.headers.params, {search:this.search}); 
             }else{
               delete this.headers.params.search;
             }
