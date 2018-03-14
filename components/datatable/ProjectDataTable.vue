@@ -54,17 +54,7 @@
   </v-card>
 </template>
 <script>
-
-import moment from 'moment'
-
     export default {
-        filters:{
-          date(value) {
-            if (value) {
-              return moment(String(value)).format('MM/DD/YYYY hh:mm')
-            }
-          }
-        },
         data:()=>({
           search: '',
           totalItems: 0,

@@ -43,22 +43,10 @@
   </v-card>
 </template>
 <script>
-
-import moment from 'moment'
-
     export default {
-      
         props:{
           filters:{
             type:Object,
-          }
-        },
-        
-        filters:{
-          date(value) {
-            if (value) {
-              return moment(String(value)).format('MM/DD/YYYY hh:mm')
-            }
           }
         },
         data:()=>({

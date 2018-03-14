@@ -13,17 +13,6 @@
     import TicketDataTable from '~/components/datatable/TicketDataTable'
     export default {
         middleware: 'granted',
-        data:()=>({
-            
-        }),
-        methods:{
-            
-        },
-        computed:{
-            datatableFilter(){
-                return {status:6}
-            }
-        },
         components:{
             TicketDataTable
         },

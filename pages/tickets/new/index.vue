@@ -37,6 +37,7 @@
                     item-text="name"
                     item-value="id"
                     label="--Categorias--"
+                    no-data-text="No se pudo encontrar"
                     :rules="[v => !!v || 'Categoria es requerida']"
                     required
                     autocomplete
@@ -49,6 +50,7 @@
                     item-text="name"
                     item-value="id"
                     label="--Proyecto--"
+                    no-data-text="No se pudo encontrar"
                     :rules="[v => !!v || 'Proyecto es requerido']"
                     required
                     autocomplete
@@ -61,6 +63,7 @@
                     item-text="name"
                     item-value="id"
                     label="--Prioridad--"
+                    no-data-text="No se pudo encontrar"
                     :rules="[v => !!v || 'Prioridad es requerida']"
                     required
                     autocomplete
@@ -108,12 +111,14 @@
             ticket:{},
             filesInfo:[],
          }),
-         async asyncData ({ store,$axios,app }, callback) {
+         async asyncData ({ store,$axios }, callback) {
          
          let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
+         let user_id =store.getters.loggedUser.id;
+         
          $axios.get('type/group/2',config).then((res) => {
              $axios.get('categories/0/200?sortBy=id&sortType=desc',config).then((res1) => {
-                $axios.get('projects/0/200?sortBy=id&sortType=desc',config).then((res2) => {
+                $axios.get('user/'+user_id+'/projects/0/200',config).then((res2) => {
                    callback(null, { 
                       priorities: res.data.types,
                       categories: res1.data.categories,

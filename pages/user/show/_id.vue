@@ -95,6 +95,17 @@
                             :rules="[v => !!v || 'El tipo de usuario es requerido']"
                             autocomplete
                           ></v-select>
+                          <v-select
+                            :items="projects"
+                            v-model="user.projects"
+                            item-text="name"
+                            item-value="id"
+                            label="--Proyectos--"
+                            no-data-text="No se pudo encontrar"
+                            chips
+                            multiple
+                            autocomplete
+                          ></v-select>
                           <v-switch
                               color="error"
                               label="Activo"
@@ -182,15 +193,17 @@
                  $axios.get('region/country/states/'+res.data.user.country_id,config).then((res2) => {
                     $axios.get('region/states/cities/'+res.data.user.state_id,config).then((res3) => {
                         $axios.get('type/group/1',config).then((res4)=>{
+                          $axios.get('projects/0/200?sortBy=id&sortType=desc',config).then((res5)=>{
                             callback(null, { 
                               user: res.data.user,
                               countries: res1.data.countries,
                               states: res2.data.states,
                               cities: res3.data.cities,
                               roles: res4.data.types,
+                              projects: res5.data.projects,
                             });
+                          })
                         })
-                       
                      })
                  })
               })

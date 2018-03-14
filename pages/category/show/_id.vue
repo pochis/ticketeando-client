@@ -22,6 +22,7 @@
                             item-text="name"
                             item-value="id"
                             label="--Categoria padre--"
+                            no-data-text="No se pudo encontrar"
                             autocomplete
                           ></v-select>
                         </v-form>

@@ -6,9 +6,7 @@
               <v-toolbar color="accent" height="45px" flat>
                 <v-toolbar-title class="title_toolbar">{{ project.name }}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon to="/projects/list" title="volver a proyectos">
-                   <v-icon>keyboard_backspace</v-icon>
-                </v-btn>
+                <BackButton/>
               </v-toolbar>
               <v-card-title>
                   <div @click="$refs.projectImage.click()" class="pointer">

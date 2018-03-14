@@ -22,13 +22,13 @@
                 <h3 class="headline mb-0">{{project.name}}</h3>
                 <div>
                   <span class="grey--text">Teléfono: {{project.contact_phone}}</span><br>
-                  <span v-if="!!project.website">Sitio web : <a :href="project.website" :title="project.name" target="_blank">{{ project.website }}</a></span><br>
-                  <span>{{project.address}}</span>
+                  <span v-if="!!project.website">Sitio web : <a :href="project.website" :title="project.name" target="_blank">{{ project.website | truncate(20, '...')}}</a></span><br>
+                  <span>{{project.address | truncate(37, '...')}}</span>
                 </div>
               </div>
             </v-card-title>
             <v-card-actions>
-              <v-btn flat color="orange">Ver</v-btn>
+              <v-btn flat color="orange" :to="{name: 'projects-detail-id', params: { id: project.id}}">Ver proyecto</v-btn>
             </v-card-actions>
           </v-card>
       </v-flex>
@@ -53,7 +53,7 @@
 <script>
 
     export default {
-        
+      
         data:()=>({
           loadMore:true,
           snackbar: false,
@@ -70,10 +70,13 @@
             user(){
                 return this.$store.getters.loggedUser;
             },
+            projectPaths(){
+              return (this.user.role_id==1) ? 'projects':'user/'+this.user.id+'/projects'
+            },
             headers(){
               return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
             },
-            searchIndicator: function () {
+            searchIndicator() {
               if (this.isSearching) {
                 return '⟳  Buscando....'
               } else if (this.searching) {
@@ -99,7 +102,7 @@
         methods:{
             getProjects(){
               this.loadMore=true
-              this.$axios.get('projects/0/'+this.perPage,this.headers).then((res)=>{
+              this.$axios.get(this.projectPaths+'/0/'+this.perPage,this.headers).then((res)=>{
                 this.projects = res.data.projects;
                 this.totalProjects =res.data.total;
                 this.loadMore=false;
@@ -113,7 +116,7 @@
             getMoreProjects(){
               let offset = (this.page * this.perPage);
               this.loadMore=true
-              this.$axios.get('projects/'+offset+'/'+this.perPage,this.headers).then((res)=>{
+              this.$axios.get(this.projectPaths+'/'+offset+'/'+this.perPage,this.headers).then((res)=>{
                 this.projects = this.projects.concat(res.data.projects);
                 this.totalProjects =res.data.total;
                 this.loadMore=false;
@@ -132,7 +135,6 @@
               delete this.headers.params.search;
             }
             this.getProjects();
-            
           }, 500)
         }
     }

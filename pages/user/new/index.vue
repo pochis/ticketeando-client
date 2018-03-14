@@ -77,6 +77,7 @@
                             item-text="name"
                             item-value="id"
                             label="--Pais--"
+                            no-data-text="No se pudo encontrar"
                             :rules="[v => !!v || 'El pais es requerido']"
                             @change="getStates"
                             autocomplete
@@ -87,6 +88,7 @@
                             item-text="name"
                             item-value="id"
                             label="--Departamento--"
+                            no-data-text="No se pudo encontrar"
                             @change="getCities"
                             autocomplete
                           ></v-select>
@@ -96,6 +98,7 @@
                             item-text="name"
                             item-value="id"
                             label="--Ciudad--"
+                            no-data-text="No se pudo encontrar"
                             autocomplete
                           ></v-select>
                           <v-select
@@ -104,7 +107,19 @@
                             item-text="name"
                             item-value="id"
                             label="--Tipo de usuario--"
+                            no-data-text="No se pudo encontrar"
                             :rules="[v => !!v || 'El tipo de usuario es requerido']"
+                            autocomplete
+                          ></v-select>
+                          <v-select
+                            :items="projects"
+                            v-model="user.projects"
+                            item-text="name"
+                            item-value="id"
+                            label="--Proyectos--"
+                            no-data-text="No se pudo encontrar"
+                            chips
+                            multiple
                             autocomplete
                           ></v-select>
                           <v-switch
@@ -176,7 +191,7 @@
           snackbar: false,
           message: null,
           imagePreview: null,
-          user:{country_id:47,status:0,genre:1},
+          user:{country_id:47,status:0,genre:1,project_ids:[]},
           emailRules: [
             v => !!v || 'Correo electronico es requerido',
             v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'El correo electronico no es valido'
@@ -195,15 +210,17 @@
              $axios.get('region/country/states/'+countryId,config).then((res1) => {
                 $axios.get('region/states/cities/'+stateId,config).then((res2) => {
                     $axios.get('type/group/1',config).then((res3)=>{
+                      $axios.get('projects/0/200?sortBy=id&sortType=desc',config).then((res4)=>{
                         callback(null, { 
                           countries: res.data.countries,
                           states: res1.data.states,
                           cities: res2.data.cities,
                           roles: res3.data.types,
+                          projects: res4.data.projects,
                         });
+                      })
                     })
-                   
-                 })
+                })
              })
           })
         },
