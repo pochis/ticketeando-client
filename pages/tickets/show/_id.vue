@@ -54,7 +54,7 @@
                             </v-list-tile>
                           </v-list>
                         </v-menu>
-                        <p v-else>{{ priority.name }}</p>
+                        <p v-else>{{ ticket.priority.name }}</p>
                     </v-flex>
                     <v-flex md4>
                         <h4 class="subheading">Solicitante:</h4>

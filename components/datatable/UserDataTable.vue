@@ -37,7 +37,7 @@
           <v-btn icon class="mx-0" :to="{name: 'user-show-id', params: { id: props.item.id }}">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
-          <v-btn icon class="mx-0" @click="deleteUser(props.item.id)">
+          <v-btn icon class="mx-0" v-if="user.id!==props.item.id" @click="deleteItem(props.item)">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
@@ -46,17 +46,25 @@
           {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
         </template>
       </v-data-table>
+      <v-snackbar
+          bottom
+          left
+          v-model="snackbar">
+          {{ message }}
+      </v-snackbar>
   </v-card>
 </template>
 <script>
     export default {
         data:()=>({
           search: '',
+          message:'',
           totalItems: 0,
           offset: 0,
           limit: 5,
           items: [],
           loading: true,
+          snackbar: false,
           pagination: {},
           titles: [
                 { text: 'ID', value: 'id' },
@@ -134,8 +142,22 @@
                     console.log(error.response.message);
                 });
           },
-          deleteUser(id){
-            console.log("borrando ususario")
+          deleteItem(item){
+            const index = this.items.indexOf(item)
+            let conf = confirm('Al eliminar un usuario se perdera todo su historial en la aplicación ¿Esta seguro de aplicar esta acción?');
+            if(conf){
+              this.loading =true;
+              this.$axios.delete('user/'+item.id,this.headers).then((res)=>{
+                this.message = res.data.message;
+                this.snackbar=true;
+                this.loading =false;
+                this.items.splice(index, 1);
+              }).catch((error)=>{
+                this.message = error.response.message;
+                this.snackbar=true;
+                this.loading =false;
+              });
+            }
           }
         }
     }

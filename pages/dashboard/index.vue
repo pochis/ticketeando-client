@@ -61,25 +61,27 @@ export default {
     
     data:()=>({
       title:'Panel de control',
-      totalOpenTickets:0,
     }),
     async asyncData ({params,store,$axios,error}) {
         let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}},
         user =store.getters.loggedUser,
         path = (user.role_id==1) ? 'projects/total':'user/'+user.id+'/projects/total',
-        ticketsPath = (user.role_id==1) ? 'tickets/total':'user/'+user.id+'/tickets/total';
+        ticketsPath = (user.role_id==1) ? 'tickets/total':'user/'+user.id+'/tickets/total',
+        ticketsOpenPath = (user.role_id==1) ? 'tickets/total?ticket_status=6':'user/'+user.id+'/tickets/total?ticket_status=6';
         
         return $axios.get(path,config).then((res) => {
-              return $axios.get(ticketsPath,config).then((res1)=>{
-                  return {
+          return $axios.get(ticketsPath,config).then((res1)=>{
+            return $axios.get(ticketsOpenPath,config).then((res2)=>{
+              return {
                     totalProjects: res.data.total,
-                    totalTickets: res1.data.total
+                    totalTickets: res1.data.total,
+                    totalOpenTickets: res2.data.total,
                   }
-                })
               })
-              .catch((e) => {
-                error({ statusCode: 404, message: 'Proyecto no encontrado' })
-              })
+            })
+          }).catch((e) => {
+              error({ statusCode: 404, message: 'Proyecto no encontrado' })
+        })
       },
     computed:{
       datatableFilter(){
