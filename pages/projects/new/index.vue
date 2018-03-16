@@ -47,6 +47,7 @@
                             v-model="project.address"
                             :rules="[v => !!v || 'Dirección es requerido']"
                             multi-line
+                            required
                           ></v-text-field>
                           <v-text-field
                             label="Telefono de contacto"
@@ -142,7 +143,7 @@
                         this.message=error.response.data.email[0];
                         return;
                        }
-                       this.message=error.response.message
+                       this.message=error.response.data.message
                    })
                           
                 }

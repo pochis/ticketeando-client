@@ -237,7 +237,7 @@
                    }).catch((error)=>{
                        this.saving=false;
                        this.snackbar=true;
-                       this.message=error.response.message
+                       this.message=error.response.data.message
                    })
                           
                 }

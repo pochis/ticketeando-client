@@ -45,17 +45,14 @@
     </v-flex>
     <v-flex xs12 md12 class="mt-5">
       <v-toolbar  color="accent" height="45px">
-          <v-toolbar-title class="title_toolbar">Tickets</v-toolbar-title>
+          <v-toolbar-title class="title_toolbar">Mis tickets</v-toolbar-title>
       </v-toolbar>
       <TicketDataTable :filters="datatableFilter"/>
     </v-flex>
   </v-layout>
   </v-container>
-  
 </template>
-
 <script>
-
 import TicketDataTable from '~/components/datatable/TicketDataTable.vue';
 export default {
     

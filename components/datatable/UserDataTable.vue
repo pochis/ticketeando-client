@@ -153,7 +153,7 @@
                 this.loading =false;
                 this.items.splice(index, 1);
               }).catch((error)=>{
-                this.message = error.response.message;
+                this.message = error.response.data.message;
                 this.snackbar=true;
                 this.loading =false;
               });

@@ -275,7 +275,6 @@
                        this.message=res.data.message
                        this.imagePreview=null;
                        this.$refs.formUser.reset();
-                       this.user.status=0;
                    }).catch((error)=>{
                        this.saving=false;
                        this.snackbar=true;
@@ -283,7 +282,7 @@
                         this.message=error.response.data.email[0];
                         return;
                        }
-                       this.message=error.response.message
+                       this.message=error.response.data.message
                    })
                           
                 }

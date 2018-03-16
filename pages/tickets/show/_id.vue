@@ -36,7 +36,7 @@
                         <h4 class="subheading">Estado:</h4>
                         <p> <v-chip small color="primary" text-color="white">{{ticket.status.name}}</v-chip></p>
                         <h4 class="subheading">Responsable:</h4>
-                        <p>{{(ticket.owner[0])?ticket.owner[0].name+' '+ticket.owner[0].lastname:'No asignado'}}</p>
+                        <p>{{(ticket.owner[0]) ? ticket.owner[0].name+' '+ticket.owner[0].lastname:'No asignado'}}</p>
                         
                     </v-flex>
                     <v-flex md4>
@@ -127,8 +127,8 @@
                 this.$axios.put('ticket/'+this.ticket.id,this.ticket,this.headers).then((res)=>{
                     this.message=res.data.message
                     this.snackbar=true;      
-                }).catch((e)=>{
-                    this.message=e.response.message
+                }).catch((error)=>{
+                    this.message=error.response.data.message
                     this.snackbar=true;
                 })
             }

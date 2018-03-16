@@ -206,7 +206,8 @@ import { setSession } from '~/utils/auth';
                   })
                   
                 }).catch((error)=>{
-                  console.log(error)
+                  this.snackbar=true;
+                  this.message=error.response.data.message
                 })
               }
                 
@@ -235,7 +236,7 @@ import { setSession } from '~/utils/auth';
                       this.message=res.data.message
                    }).catch((error)=>{
                       this.snackbar=true;
-                      this.message=error.response.message
+                      this.message=error.response.data.message
                    })
                 }
             },

@@ -90,7 +90,7 @@
                         this.message=error.response.data.email[0];
                         return;
                        }
-                       this.message=error.response.message
+                       this.message=error.response.data.message
                    })
                 }
             },

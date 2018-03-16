@@ -137,7 +137,7 @@
                         this.message=error.response.data.email[0];
                         return;
                        }
-                       this.message=error.response.message
+                       this.message=error.response.data.message
                    })
                           
                 }
@@ -153,7 +153,8 @@
                   this.uploading=false;
                   this.project.image = res.data.image;
                 }).catch((error)=>{
-                  console.log(error)
+                  this.message=error.response.data.message
+                  this.snackbar=true;
                 })
               }
             },

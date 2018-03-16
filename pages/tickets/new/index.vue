@@ -168,7 +168,7 @@
                       this.filesInfo=[];
                     }).catch((error)=>{
                       this.snackbar=true;
-                      this.message=error.response.message
+                      this.message=error.response.data.message
                     })
                  }
              },

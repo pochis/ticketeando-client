@@ -35,7 +35,7 @@
           <v-btn icon class="mx-0" :to="{name: 'category-show-id', params: { id: props.item.id }}">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
-          <v-btn icon class="mx-0" @click="deleteCategory(props.item.id)">
+          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
@@ -44,16 +44,24 @@
           {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
         </template>
       </v-data-table>
+      <v-snackbar
+          bottom
+          left
+          v-model="snackbar">
+          {{ message }}
+      </v-snackbar>
   </v-card>
 </template>
 <script>
     export default {
         data:()=>({
           search: '',
+          message: '',
           totalItems: 0,
           offset: 0,
           limit: 5,
           items: [],
+          snackbar: false,
           loading: true,
           pagination: {},
           titles: [
@@ -130,8 +138,22 @@
                     console.log(error.response.message);
                 });
           },
-          deleteCategory(id){
-            console.log("borrando categoria")
+          deleteItem(item){
+            const index = this.items.indexOf(item)
+            let conf = confirm('¿Esta seguro de aplicar esta acción?');
+            if(conf){
+              this.loading =true;
+              this.$axios.delete('category/'+item.id,this.headers).then((res)=>{
+                this.message = res.data.message;
+                this.snackbar=true;
+                this.loading =false;
+                this.items.splice(index, 1);
+              }).catch((error)=>{
+                this.message = error.response.data.message;
+                this.snackbar=true;
+                this.loading =false;
+              });
+            }
           }
         }
     }
