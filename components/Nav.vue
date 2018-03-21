@@ -81,6 +81,7 @@ import { mapGetters } from 'vuex'
                 { title: 'Proyectos', icon: 'location_city', path:'/projects'},
                 { title: 'Categorias', icon: 'assignment', path:'/category'},
                 { title: 'Reporte de tickets', icon: 'bug_report', path:'/tickets/queue'},
+                { title: 'APIs', icon: 'code', path:'/api'},
               ],
               mini: false,
               
