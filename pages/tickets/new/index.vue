@@ -82,7 +82,7 @@
           <v-card-actions>
             <v-btn
              color="primary"
-             @click="createTicket"
+             @click="create"
              :disabled="!valid" >
             Crear
           </v-btn>
@@ -137,7 +137,7 @@
             }
         },
          methods:{
-            createTicket(){
+            create(){
                  if(this.$refs.ticketForm.validate()){
                     this.creating=true;
                     let data = this.ticket;

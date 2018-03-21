@@ -6,7 +6,7 @@
           <v-spacer></v-spacer>
           <v-btn outline small color="primary" to="/tickets/new" >
             <v-icon>bug_report</v-icon>
-            Agregar Ticket
+            Crear Ticket
           </v-btn>
       </v-toolbar>
       <TicketDataTable :filters="datatableFilter"/>
