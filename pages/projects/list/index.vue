@@ -74,7 +74,7 @@
               return (this.user.role_id==1) ? 'projects':'user/'+this.user.id+'/projects'
             },
             headers(){
-              return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
+              return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token},params:{status:1}}
             },
             searchIndicator() {
               if (this.isSearching) {

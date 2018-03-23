@@ -34,12 +34,14 @@
                               color="error"
                               label="Activo"
                               v-model="api.status"
-                              value="1"
+                              :value="1"
+                              :disabled="api.id == 1"
                             ></v-switch>
                         </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-btn
+                 v-if="api.id!=1"
                  color="primary"
                  @click="generateKey">
                 Generar clave

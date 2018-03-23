@@ -113,7 +113,7 @@
          }),
          async asyncData ({ store,$axios }, callback) {
          
-         let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token}};
+         let config ={headers:{'Authorization': 'Bearer '+store.state.auth.token},params:{status:1}};
          let user_id =store.getters.loggedUser.id;
          
          $axios.get('type/group/2',config).then((res) => {

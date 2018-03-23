@@ -90,65 +90,60 @@
 </template>
 <script>
     export default {
-        data: () => ({
-          valid: true,
-          menu: false,
-          dialog: false,
-          changing: false,
-          showSuccessAlert: false,
-          showErrorAlert: false,
-          successMsg: null,
-          errorMsg: null,
-          passwordData:{},
-          confirm_validate:(pass)=>{
-             return [v => !!v || 'Confirmación de contraseña es requerida',
-              v => pass===v || 'las contraseñas no coinciden']
-          }
-        }),
-        computed:{
-          user(){
-            return this.$store.getters.loggedUser;
-          },
-          axiosConfig(){
-            return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
+      data: () => ({
+        valid: true,
+        menu: false,
+        dialog: false,
+        changing: false,
+        showSuccessAlert: false,
+        showErrorAlert: false,
+        successMsg: null,
+        errorMsg: null,
+        passwordData:{},
+        confirm_validate:(pass)=>{
+           return [v => !!v || 'Confirmación de contraseña es requerida',
+            v => pass===v || 'las contraseñas no coinciden']
+        }
+      }),
+      computed:{
+        user(){
+          return this.$store.getters.loggedUser;
+        },
+        headers(){
+          return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
+        }
+      },
+      methods:{
+        changePassword(){
+          if (this.$refs.formChangePassword.validate()) {
+            this.changing=true;
+            this.$axios.put('user/password/update/'+this.user.id,this.passwordData,this.headers).then((res)=>{
+              this.changing=false;
+              this.showSuccessAlert=true;
+              this.successMsg=res.data.message;
+              this.$refs.formChangePassword.reset();
+              this.clearAlerts();
+            }).catch((error)=>{
+              this.changing=false;
+              this.showErrorAlert=true;
+              this.errorMsg=error.response.data.message;
+            })
           }
         },
-        methods:{
-          changePassword(){
-            if (this.$refs.formChangePassword.validate()) {
-              this.changing=true;
-              this.$axios.put('user/password/update/'+this.user.id,this.passwordData,this.axiosConfig).then((res)=>{
-                this.changing=false;
-                this.showSuccessAlert=true;
-                this.successMsg=res.data.message;
-                this.$refs.formChangePassword.reset();
-                this.clearAlerts();
-              }).catch((error)=>{
-                this.changing=false;
-                this.showErrorAlert=true;
-                this.errorMsg=error.response.data.message;
-              })
-            }
-            
-          },
-          clearAlerts(){
-            setTimeout(()=>{
-              this.showErrorAlert=false;
-              this.showSuccessAlert=false;
-            },3000)
-          },
-          async logout(){
-            let $_this=this;
-            
-            try{
-             await  $_this.$store.dispatch('logout',{userId:$_this.user.id});
-              $_this.$router.push('/login')
-              
-            }catch(e){
-              console.log(e);
-            }
-            
+        clearAlerts(){
+          setTimeout(()=>{
+            this.showErrorAlert=false;
+            this.showSuccessAlert=false;
+          },3000)
+        },
+        async logout(){
+          try{
+            await  this.$store.dispatch('logout',this.user.id);
+            this.$router.push('/login')
+          }catch(e){
+            console.log(e);
           }
         }
+      }
     }
 </script>

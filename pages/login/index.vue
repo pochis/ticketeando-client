@@ -10,7 +10,6 @@
                       <img src="/v.png" alt="Ticketeando" title="Ticketeando">
                   </v-avatar>
               </div>
-              
             <v-card-text>
               <v-form v-model="valid" ref="accessAndForgotform" lazy-validation>
                  <v-text-field
@@ -41,14 +40,13 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-                    <v-btn
-                        @click="handleForm"
-                        :disabled="!valid" 
-                        color="primary">
-                        Ingresar
-                    </v-btn>
-                
-                <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
+              <v-btn
+                  @click="actionForm"
+                  :disabled="!valid" 
+                  color="primary">
+                  Ingresar
+              </v-btn>
+              <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
             </v-card-actions>
         </v-card>
       </v-flex>
@@ -78,7 +76,7 @@
         }),
         methods: {
           
-          handleForm() {
+          actionForm() {
             if (this.$refs.accessAndForgotform.validate()) {
                
                 if(this.loginForm){
