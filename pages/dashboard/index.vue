@@ -2,7 +2,7 @@
   <v-container  grid-list-md>
     <v-layout row wrap>
     <v-flex xs12 md4>
-        <v-card color="cyan darken-2" class="white--text">
+        <v-card color="primary darken-2" class="white--text">
           <v-container fluid grid-list-lg>
             <v-layout row>
               <v-flex xs7>
@@ -16,7 +16,7 @@
         </v-card>
     </v-flex>
     <v-flex xs12 md4>
-        <v-card color="cyan darken-2" class="white--text">
+        <v-card color="primary darken-2" class="white--text">
           <v-container fluid grid-list-lg>
             <v-layout row>
               <v-flex xs7>
@@ -30,7 +30,7 @@
         </v-card>
     </v-flex>
     <v-flex xs12 md4>
-      <v-card color="cyan darken-2" class="white--text">
+      <v-card color="primary darken-2" class="white--text">
         <v-container fluid grid-list-lg>
           <v-layout row>
             <v-flex xs7>

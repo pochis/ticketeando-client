@@ -19,7 +19,7 @@
       </v-list>
       <v-list dense>
         <v-divider light></v-divider>
-        <v-list-tile v-for="menu in menuItems" :key="menu.title" :title="menu.title" :to="menu.path">
+        <v-list-tile v-for="menu in menuItems" :key="menu.title" :title="menu.title" :to="menu.path" exact>
           <v-list-tile-action>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-tile-action>
@@ -31,7 +31,7 @@
       <v-list dense v-if="loggedUser.role_id==1">
       <v-divider></v-divider>
        <v-subheader>Menu administrador</v-subheader>
-        <v-list-tile v-for="menu in adminMenuItems" :key="menu.title" :title="menu.title" :to="menu.path">
+        <v-list-tile v-for="menu in adminMenuItems" :key="menu.title" :title="menu.title" :to="menu.path" exact>
           <v-list-tile-action>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-tile-action>

@@ -110,7 +110,7 @@
                 this.searching =false;
               }).catch((error)=>{
                 this.loadMore=false;
-                this.message=error.response.message
+                this.message=error.response.data.message
               })
             },
             getMoreProjects(){
@@ -123,7 +123,7 @@
                 this.page++;
               }).catch((error)=>{
                 this.loadMore=false;
-                this.message=error.response.message
+                this.message=error.response.data.message
               })
           },
           searched: _.debounce(function () {
