@@ -5,6 +5,9 @@
           <v-alert type="error" :value="showErrorAlert">
             {{errorMsg}}
           </v-alert>
+          <v-alert type="success" :value="showSuccesAlert">
+            {{successMsg}}
+          </v-alert>
               <div class="text-md-center pt-3">
                   <v-avatar :tile="false" size="75px" class="grey lighten-4">
                       <img src="/v.png" alt="Ticketeando" title="Ticketeando">
@@ -26,8 +29,6 @@
                     type="password"
                     required
                   ></v-text-field>
-                
-                
                 <div class="text-md-right text-xs-right">
                     <v-btn
                         @click="loginForm = !loginForm"
@@ -65,7 +66,9 @@
             loginForm:true,
             valid: true,
             showErrorAlert: false,
+            showSuccesAlert: false,
             errorMsg: null,
+            successMsg: null,
             email: '',
             emailRules: [
                 v => !!v || 'Correo electronico  es requerido',
@@ -107,7 +110,20 @@
               }
           },
           forgot() {
-            
+             if (this.$refs.accessAndForgotform.validate()) {
+               this.loading= true;
+                this.$axios.post('recovery', {
+                    recoveryemail: this.email,
+                }).then((res)=>{
+                  this.successMsg = res.data.message;
+                  this.loading=false
+                  this.showSuccesAlert = true;
+                }).catch((error)=>{
+                  this.errorMsg = error.response.data.message;
+                  this.loading=false
+                  this.showErrorAlert = true;
+                });
+              }
           },
           
           async logout() {

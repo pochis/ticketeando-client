@@ -115,25 +115,47 @@
               error({ statusCode: 404, message: 'Ticket no encontrado' })
           })
         },
+        watch:{
+          '$route'(to){
+             this.markNotificationsAsRead(to.query.read);
+          }
+        },
+        created(){
+            this.markNotificationsAsRead(this.$route.query.read);
+        },
         computed:{
-            headers(){
-              return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
-            }
+          headers(){
+            return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token}}
+          }
         },
         methods:{
-            changePriority(priority_id,priority_name){
-                this.ticket.priority_id =priority_id;
-                this.ticket.priority.name = priority_name
-                this.$axios.put('ticket/'+this.ticket.id,this.ticket,this.headers).then((res)=>{
-                    this.message=res.data.message
-                    this.snackbar=true;      
-                }).catch((error)=>{
-                    this.message=error.response.data.message
-                    this.snackbar=true;
-                })
-            }
+          changePriority(priority_id,priority_name){
+            this.ticket.priority_id =priority_id;
+            this.ticket.priority.name = priority_name
+            this.$axios.put('ticket/'+this.ticket.id,this.ticket,this.headers).then((res)=>{
+                this.message=res.data.message
+                this.snackbar=true;      
+            }).catch((error)=>{
+                this.message=error.response.data.message
+                this.snackbar=true;
+            })
+          },
+          markNotificationsAsRead(hasRead){
+           if(!!hasRead) {
+               this.headers.params={
+                read:0,
+                user:this.$store.getters.loggedUser.id,
+                sortBy:'id',
+                sortType:'desc'
+               }
+             this.$axios.put('notification/'+this.$route.query.read,{
+                read:1
+             },this.headers).then((res)=>{
+              this.$store.dispatch('getNotifications',this.headers);
+             }); 
+           }
+         }
         },
-        
         components:{
             TicketComments,
             TicketStatus

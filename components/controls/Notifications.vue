@@ -5,19 +5,19 @@
         bottom>
       <v-btn icon class="icons" slot="activator">
         <v-badge color="error" overlap>
-          <span v-if="total" slot="badge">{{total}}</span>
-          <v-icon>{{(hasNotification ? 'notifications_active':'notifications')}}</v-icon>
+          <span v-if="$store.state.totalNotifications" slot="badge">{{$store.state.totalNotifications}}</span>
+          <v-icon>{{($store.state.hasNotification ? 'notifications_active':'notifications')}}</v-icon>
         </v-badge>
       </v-btn>
       <v-list>
-        <v-list-tile :to="{name: 'tickets-show-id', params: { id: notification.ticket_id }}" v-for="notification in notifications" :key="notification.id">
+        <v-list-tile :to="{name: 'tickets-show-id', params: { id: notification.ticket_id },query:{ read: notification.id }}" v-for="notification in $store.getters.getNotifications" :key="notification.id">
           <v-list-tile-title>{{notification.subject}}</v-list-tile-title>
         </v-list-tile>
       </v-list>
       <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
-      <v-divider></v-divider>
+      <v-divider v-if="$store.state.totalNotifications"></v-divider>
       <v-list>
-        <v-list-tile to="/">
+        <v-list-tile :to="{name:'notification-user-id',params:{id:$store.getters.loggedUser.id}}">
           <v-list-tile-title class="primary--text text-xs-center">Ver todas las notificaciones</v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -33,12 +33,9 @@
 <script>
     export default{
          data:()=>({
-            hasNotification: false,
             loading: true,
             snackbar: false,
             message: '',
-            notifications:[],
-            total:0,
         }),
         mounted(){
           this.getNotifications();
@@ -57,19 +54,17 @@
           },
         },
         methods:{
-          getNotifications(){
-            this.$axios.get('notifications/0/10',this.headers).then((res)=>{
-              this.loading=false;
-              this.notifications = res.data.notifications;
-              this.total= res.data.total
-              if(res.data.total > 0) this.hasNotification=true
-            }).catch((error)=>{
-              this.message=error.response.data.message
-            })
+         async getNotifications(){
+            try {
+                this.loading=true;   
+                await this.$store.dispatch('getNotifications',this.headers);
+                this.loading=false;
+              }catch (e) {
+                this.message = e;
+                this.snackbar = true;
+                this.loading=false
+              }
           },
-          read(id){
-            this.$axios.put('notifications/'+id)
-          }
         }
     }
 </script>

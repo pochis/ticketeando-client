@@ -74,7 +74,15 @@
               return (this.user.role_id==1) ? 'projects':'user/'+this.user.id+'/projects'
             },
             headers(){
-              return {headers:{'Authorization': 'Bearer '+this.$store.state.auth.token},params:{status:1}}
+              return {
+                headers:{'Authorization': 'Bearer '+this.$store.state.auth.token},
+                params:{
+                  status:1,
+                  sortBy:'id',
+                  sortType:'desc'
+                }
+                
+              }
             },
             searchIndicator() {
               if (this.isSearching) {
@@ -108,6 +116,7 @@
                 this.loadMore=false;
                 this.isSearching = false;
                 this.searching =false;
+                this.page=1;
               }).catch((error)=>{
                 this.loadMore=false;
                 this.message=error.response.data.message
@@ -130,12 +139,21 @@
             this.isSearching = true
             this.loadMore = true;
             if(!!this.search){
-              this.headers.params={search:this.search}
+              this.headers.params.search=this.search
             }else{
               delete this.headers.params.search;
             }
             this.getProjects();
+            
           }, 500)
+        },
+        head () {
+          return {
+            title:  'Proyectos' ,
+            meta: [
+              { hid: 'description', name: 'description', content: 'ticketeando contro de soporte para mesa de ayuda' }
+            ]
+          }
         }
     }
     
