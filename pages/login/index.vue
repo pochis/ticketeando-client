@@ -8,7 +8,7 @@
           <v-alert type="success" :value="showSuccesAlert">
             {{successMsg}}
           </v-alert>
-              <div class="text-md-center pt-3">
+              <div class="text-xs-center pt-3">
                   <v-avatar :tile="false" size="75px" class="grey lighten-4">
                       <img src="/v.png" alt="Ticketeando" title="Ticketeando">
                   </v-avatar>
