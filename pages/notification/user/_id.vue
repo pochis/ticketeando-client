@@ -7,7 +7,7 @@
           </v-toolbar>
         </v-flex>
         <v-flex xs12 md12 v-for="notification in notifications" :key="notification.id">
-            <v-card :to="{name: 'tickets-show-id', params: { id: notification.ticket_id }}">
+            <v-card>
                 <v-card-title>
                     <div>
                       <span class="grey--text">TICK:{{notification.ticket.id}} - {{notification.ticket.title}}</span><br>
@@ -15,6 +15,13 @@
                       <span>{{notification.created_at | date}}</span>
                     </div>
                 </v-card-title>
+                 <v-card-actions>
+                  <v-btn :to="{name: 'tickets-show-id', params: { id: notification.ticket_id }}">Ver</v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn icon  @click.native="deleteItem(notification)">
+                    <v-icon color="red">delete</v-icon>
+                  </v-btn>
+                </v-card-actions>
             </v-card>
         </v-flex>
         <v-flex xs3 md12 text-md-center>
@@ -27,22 +34,27 @@
           <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
         </v-flex>
        </v-layout>
+       <v-snackbar
+          bottom
+          left
+          v-model="snackbar">
+          {{ message }}
+      </v-snackbar>
   </v-container>
 </template>
 <script>
     export default {
         middleware: 'granted',
         data:()=>({
-            loading:true,
-            notifications:[],
-            perPage:10,
-            page:1,
-            total:0
+            loading: true,
+            snackbar: false,
+            notifications: [],
+            perPage: 10,
+            page: 1,
+            total: 0
         }),
         mounted(){
-          if(this.notifications.length==0){
-            this.getNotifications();
-          }
+          this.getNotifications();
         },
         computed:{
             headers(){
@@ -79,6 +91,23 @@
                   this.message=error.response.message
                 })
           },
+          deleteItem(item){
+            const index = this.notifications.indexOf(item)
+            let conf = confirm('¿Esta seguro de aplicar esta acción?');
+            if(conf){
+              this.loading =true;
+              this.$axios.delete('notification/'+item.id,this.headers).then((res)=>{
+                this.message = res.data.message;
+                this.snackbar=true;
+                this.loading =false;
+                this.notifications.splice(index, 1);
+              }).catch((error)=>{
+                this.message = error.response.data.message;
+                this.snackbar=true;
+                this.loading =false;
+              });
+            }
+          }
         },
         head () {
           return {
