@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "HOST=$IP PORT=$PORT nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
+    "build": "HOST=$IP PORT=$PORT nuxt build",
+    "start": "HOST=$IP PORT=$PORT nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {

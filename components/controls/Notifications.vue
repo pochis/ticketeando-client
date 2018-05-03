@@ -14,11 +14,13 @@
         <v-list-tile @click="refresh">
           <v-list-tile-title><v-icon>refresh</v-icon> Refrescar</v-list-tile-title>
         </v-list-tile>
+        <v-list-tile v-if="loading">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </v-list-tile>
         <v-list-tile :to="{name: 'tickets-show-id', params: { id: notification.ticket_id },query:{ read: notification.id }}" v-for="notification in $store.getters.getNotifications" :key="notification.id">
           <v-list-tile-title>{{notification.subject}}</v-list-tile-title>
         </v-list-tile>
       </v-list>
-      <v-progress-circular indeterminate color="primary" v-if="loading"></v-progress-circular>
       <v-divider v-if="$store.state.totalNotifications"></v-divider>
       <v-list>
         <v-list-tile :to="{name:'notification-user-id',params:{id:$store.getters.loggedUser.id}}">

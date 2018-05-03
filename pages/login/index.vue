@@ -78,7 +78,6 @@
             
         }),
         methods: {
-          
           actionForm() {
             if (this.$refs.accessAndForgotform.validate()) {
                
@@ -89,9 +88,7 @@
                 }
             }
           },
-          
           async login(){
-            
              try {
                 this.loading=true;   
                 await this.$store.dispatch('login', {
@@ -133,59 +130,7 @@
               this.formError = e.message
             }
           }
-          
         },
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          /*
-          submit () {
-            if (this.$refs.loginForm.validate()) {
-                let $this = this;
-                $this.loading=true;
-                
-                $this.$axios({
-                  method: 'post',
-                  url: $this.$store.state.endpoint+'auth',
-                  data: {
-                    email: $this.email,
-                    password: $this.password,
-                  }
-                }).then(function (res) {
-                    $this.$store.dispatch('login',{token:res.data.token} ).then(stored =>{
-                    console.log(atob(res.data.token));
-                    $this.loading=false;
-                      
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    $this.loading=false;
-                })
-                
-      
-            }
-          },
-          forgot () {
-              if (this.$refs.forgotForm.validate()) {
-                  axios.post('/api/submit', {
-                    email: this.email,
-                })
-              }
-          }
-          */
         head () {
           return {
             title: this.title,
